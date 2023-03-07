@@ -424,7 +424,7 @@ class _AddPageState extends State<AddPage> {
         type: FileType.custom,
         allowedExtensions: ['pdf']);
 
-    if (result != null) {
+    if (result != null) { 
       String extension = result.paths[0]!.split('.').last;
 
       if (extension.toLowerCase() == 'pdf') {
