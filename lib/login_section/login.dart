@@ -175,7 +175,16 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     child: load
-                        ?const CustomIndigator()
+                        ?Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text('Please wait'),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            CustomIndigator()
+                          ],
+                        )
                         : Text(
                             'Login',
                             style: GoogleFonts.poppins(fontSize: 18),

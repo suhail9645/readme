@@ -26,10 +26,9 @@ class _AddPageState extends State<AddPage> {
   String? imageurl;
   String path1 = '';
   File? image;
-  PlatformFile? pickedfile;
+  File? pdfFile;
   bool isAdd = false;
   bool load = false;
-  var story;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -404,11 +403,11 @@ class _AddPageState extends State<AddPage> {
   }
 
   Future<void> addingToStorage() async {
-    final file = File(pickedfile!.path!);
+    // final file = File(pickedfile!.path!);
 
     final ref =
         FirebaseStorage.instance.ref().child('${_storyname.text}/file.pdf');
-    await ref.putFile(file);
+    await ref.putFile(pdfFile!);
     final ref1 =
         FirebaseStorage.instance.ref().child('${_storyname.text}/image.jpeg');
     await ref1.putFile(image!);
@@ -424,19 +423,20 @@ class _AddPageState extends State<AddPage> {
         type: FileType.custom,
         allowedExtensions: ['pdf']);
 
-    if (result != null) { 
+    if (result != null) {
       String extension = result.paths[0]!.split('.').last;
 
       if (extension.toLowerCase() == 'pdf') {
-        story = result;
         setState(() {
-          pickedfile = result.files.first;
+          pdfFile = File(result.files.first.path!);
+
+          path1 = result.files.first.path!;
         });
 
-        File file = File(result.files.single.path!);
-        setState(() {
-          path1 = file.path;
-        });
+        // File file = File(result.files.single.path!);
+        // setState(() {
+        //   path1 = file.path;
+        // });
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(CustomSnackBar(contentText: 'Please add a pdf file'));

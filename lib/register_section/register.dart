@@ -211,14 +211,23 @@ class _RegisterPageState extends State<RegisterPage> {
                           load = true;
                         });
                         await ClassFunctions.register(
-                            _email.text, _password.text,_username.text, context,);
+                            _email.text, _password.text,_username.text,context,);
                         setState(() {
                           load = false;
                         });
                       }
                     },
                     child: load
-                        ?const CustomIndigator()
+                        ?Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text('Please wait'),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            CustomIndigator()
+                          ],
+                        )
                         : Text(
                             'Register',
                             style: GoogleFonts.poppins(fontSize: 18),
