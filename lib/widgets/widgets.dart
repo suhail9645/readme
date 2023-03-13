@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:read_me/home_section/variables.dart';
 
 class CustomIndigator extends SizedBox {
   const CustomIndigator({super.key})
@@ -27,7 +28,33 @@ class CustomSnackBar extends SnackBar {
           duration: const Duration(seconds: 3),
           elevation: 30,
           behavior: SnackBarBehavior.floating,
-          backgroundColor: const Color.fromARGB(255, 9, 60, 106),
+          backgroundColor: Variables.mColor,
         );
 }
+
+
+class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const MyAppBar({super.key});
+
+  @override
+  Size get preferredSize => Size.fromHeight(100);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor:Variables.mColor,
+      title: Text('My App'),
+      centerTitle: true,
+      actions: [
+        Switch(
+          value: true,
+          onChanged: (bool value) {
+            // Handle switch value change
+          },
+        ),
+      ],
+    );
+  }
+}
+
 

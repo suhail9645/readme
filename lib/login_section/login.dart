@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:read_me/fuctions/functions.dart';
+import 'package:read_me/home_section/variables.dart';
 
 import 'package:read_me/register_section/register.dart';
 
@@ -161,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: ElevatedButton(
                     style: const ButtonStyle(
                         backgroundColor: MaterialStatePropertyAll(
-                            Color.fromARGB(255, 9, 60, 106))),
+                            Variables.mColor)),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         setState(() {

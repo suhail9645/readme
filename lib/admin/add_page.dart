@@ -3,7 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:read_me/model/model_user.dart';
+import 'package:read_me/model/model_story.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:read_me/widgets/widgets.dart';
 
@@ -29,6 +29,7 @@ class _AddPageState extends State<AddPage> {
   File? pdfFile;
   bool isAdd = false;
   bool load = false;
+  String? extensionImage;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,9 +206,9 @@ class _AddPageState extends State<AddPage> {
                     horizontalTitleGap: 1,
                     minLeadingWidth: 10,
                     contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Short'),
+                    title: const Text('Other'),
                     leading: Radio(
-                      value: 'Short',
+                      value: 'Other',
                       groupValue: grpval,
                       onChanged: (value) {
                         setState(() {
@@ -335,7 +336,7 @@ class _AddPageState extends State<AddPage> {
                       groupValue: grpval,
                       onChanged: (value) {
                         setState(() {
-                          // actvalue=value;
+                          
                           grpval = value!;
                         });
                       },
@@ -374,12 +375,20 @@ class _AddPageState extends State<AddPage> {
                       });
 
                       await addingToStorage();
+
                       setState(() {
                         load = false;
+                         image=null;
+                        _authorname.clear();
+                        _story.clear();
+                        _storyname.clear();
+                        grpval='Romance';
+                        path1='';
                       });
                     } else {
                       setState(() {
                         isAdd = true;
+                       
                       });
                     }
                   },
@@ -403,13 +412,12 @@ class _AddPageState extends State<AddPage> {
   }
 
   Future<void> addingToStorage() async {
-    // final file = File(pickedfile!.path!);
-
     final ref =
         FirebaseStorage.instance.ref().child('${_storyname.text}/file.pdf');
     await ref.putFile(pdfFile!);
-    final ref1 =
-        FirebaseStorage.instance.ref().child('${_storyname.text}/image.jpeg');
+    final ref1 = FirebaseStorage.instance
+        .ref()
+        .child('${_storyname.text}/image.$extensionImage');
     await ref1.putFile(image!);
     fileurl = await ref.getDownloadURL();
     imageurl = await ref1.getDownloadURL();
@@ -432,11 +440,6 @@ class _AddPageState extends State<AddPage> {
 
           path1 = result.files.first.path!;
         });
-
-        // File file = File(result.files.single.path!);
-        // setState(() {
-        //   path1 = file.path;
-        // });
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(CustomSnackBar(contentText: 'Please add a pdf file'));
@@ -452,6 +455,7 @@ class _AddPageState extends State<AddPage> {
     if (pickingimage != null) {
       setState(() {
         image = File(pickingimage.path);
+        extensionImage = image!.path.split('.').last;
       });
     }
   }
