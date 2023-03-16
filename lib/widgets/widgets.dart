@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:read_me/fuctions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
-
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:read_me/login_section/login.dart';
 class CustomIndigator extends SizedBox {
   const CustomIndigator({super.key})
       : super(
@@ -55,6 +57,31 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
     );
   }
+}
+class CustomAlertBox extends AlertDialog{
+   CustomAlertBox({super.key}):super(
+    title: Text('Are you Sure',style: TextStyle(),)
+  );
+   
+  
+ 
+}
+class CustomAwesome extends AwesomeDialog{
+  CustomAwesome({required super.context,required content}):super(
+     dialogType: DialogType.warning,
+            animType: AnimType.rightSlide,
+            title: 'Are You Sure',
+            desc: 'Are you logout from $content',
+            
+            btnCancelOnPress: () {
+
+            },
+            btnOkOnPress: () {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage(),));
+             ClassFunctions.adminIsLog(false, context);
+            },
+            );
+  
 }
 
 

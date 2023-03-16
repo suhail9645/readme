@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/model/model_story.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:read_me/widgets/widgets.dart';
@@ -33,6 +34,17 @@ class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Variables.mColor,
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title:Text('Admin Page',style: Variables.mStyle,),
+        actions: [
+          IconButton(onPressed: () {
+           CustomAwesome(context: context,content: 'Admin Page',)..show();
+          }, icon:const Icon(Icons.logout))
+        ],
+      ),
       body: SafeArea(
           child: Form(
         key: _formKey,
@@ -336,7 +348,6 @@ class _AddPageState extends State<AddPage> {
                       groupValue: grpval,
                       onChanged: (value) {
                         setState(() {
-                          
                           grpval = value!;
                         });
                       },
@@ -378,17 +389,16 @@ class _AddPageState extends State<AddPage> {
 
                       setState(() {
                         load = false;
-                         image=null;
+                        image = null;
                         _authorname.clear();
                         _story.clear();
                         _storyname.clear();
-                        grpval='Romance';
-                        path1='';
+                        grpval = 'Romance';
+                        path1 = '';
                       });
                     } else {
                       setState(() {
                         isAdd = true;
-                       
                       });
                     }
                   },
@@ -469,6 +479,7 @@ class _AddPageState extends State<AddPage> {
         authorname: _authorname.text,
         story: fileurl!,
         category: grpval);
-    story.add(storydata.toJson());
+    story.add(storydata.toJson()).whenComplete(() => ScaffoldMessenger(
+        child: CustomSnackBar(contentText: 'successfully added')));
   }
 }

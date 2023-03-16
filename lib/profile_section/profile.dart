@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:read_me/fuctions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -122,36 +123,80 @@ class ProfilePage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             TextButton.icon(
-                                onPressed: () {},
-                                icon:const Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                ),
-                                label: Text(
-                                  'Favorite',
-                                  style: Variables.mStyle,
-                                ),),
-                               TextButton.icon(
-                                onPressed: () {},
-                                icon:const Icon(
-                                  Icons.file_copy,
-                                  color:Color.fromARGB(238, 28, 135, 4),
-                                ),
-                                label: Text(
-                                  'Favorite',
-                                  style: Variables.mStyle,
-                                ),),
-                                
+                              onPressed: () {},
+                              icon: const Icon(
+                                Icons.favorite,
+                                color: Colors.red,
+                              ),
+                              label: Text(
+                                'Favorite',
+                                style: Variables.mStyle,
+                              ),
+                            ),
+                            TextButton.icon(
+                              onPressed: () {},
+                              icon: const Icon(
+                                Icons.file_copy,
+                                color: Color.fromARGB(238, 28, 135, 4),
+                              ),
+                              label: Text(
+                                'Library',
+                                style: Variables.mStyle,
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       Expanded(
-                        child: ListView(
-                          children: [
-                            
-                          ],
+                          child: ValueListenableBuilder(
+                        valueListenable: ClassFunctions.favorite,
+                        builder: (context, value, child) =>
+                            SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Column(
+                            children: value
+                                .map(
+                                  (e) => ListTile(
+                                    title: Text(
+                                      e.storyname,
+                                      style: Variables.mStyle,
+                                    ),
+                                    leading: ClipRRect(
+                                      child: Image.network(e.image,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                        return Container(
+                                          height: 120,
+                                          width: 70,
+                                          color: Colors.black12,
+                                          child: Center(
+                                            child: Text(
+                                              'Network is too busy',
+                                              style: Variables.sStyle,
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                    subtitle: Text(
+                                      'by ${e.authorname}',
+                                      style: Variables.sStyle,
+                                    ),
+                                    trailing: IconButton(
+                                      onPressed: () {
+                                        ClassFunctions.deleteFavorite(e.id!);
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                      ),
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
                         ),
-                      ),
+                      )),
                     ],
                   ),
                 ),

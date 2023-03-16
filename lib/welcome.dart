@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:read_me/admin/add_page.dart';
 
 import 'package:read_me/register_section/register.dart';
 
 import 'login_section/login.dart';
 
 class WelcomePage extends StatelessWidget {
-  const WelcomePage({super.key});
-
+  const WelcomePage({super.key, required this.value});
+final bool value;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +77,7 @@ class WelcomePage extends StatelessWidget {
                     backgroundColor: MaterialStatePropertyAll(
                         Color.fromARGB(255, 9, 60, 106))),
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage(),));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>value?const AddPage():const LoginPage(),));
                 },
                 child: Text(
                   'GET STARTED',

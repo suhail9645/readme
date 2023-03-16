@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:read_me/fuctions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
+import 'package:read_me/model/model_story.dart';
 import 'package:read_me/read_section/read.dart';
 
 class CategoryPage extends StatelessWidget {
   const CategoryPage({
     super.key,
+    required this.storyValues,
   });
+  final Box<Story> storyValues;
 
   @override
   Widget build(BuildContext context) {
+   
     return ValueListenableBuilder(
-        valueListenable: Variables.category,
-        builder: (context, value, child) => Column(
+        valueListenable: ClassFunctions.categoryName,
+        builder: (context, categoryName, child) {
+          List<Story> storyList =
+        ClassFunctions.sepratingStory(storyValues,categoryName);
+        return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 14),
                   child: Text(
-                    Variables.category.value.value[0].category,
+                    storyList.first.category,
                     style: Variables.mStyle,
                   ),
                 ),
@@ -25,7 +34,7 @@ class CategoryPage extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   child: GridView.builder(
                     padding: const EdgeInsets.all(0),
-                    itemCount: value.value.length,
+                    itemCount: storyList.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                             mainAxisExtent: 140,
@@ -36,9 +45,14 @@ class CategoryPage extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          bool isFavor = await ClassFunctions.isFavorite(
+                              storyList[index].id!);
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ReadPage(story: value.value[index]),
+                            builder: (context) => ReadPage(
+                              story: storyList[index],
+                              isFavorite: isFavor,
+                            ),
                           ));
                         },
                         child: Container(
@@ -53,16 +67,28 @@ class CategoryPage extends StatelessWidget {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image(
-                                  image: NetworkImage(
-                                    value.value[index].image,
-                                  ),
-                                  fit: BoxFit.cover,
-                                ))),
+                                    image: NetworkImage(
+                                      storyList[index].image,
+                                    ),
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return ColoredBox(
+                                        color: Colors.black12,
+                                        child: Center(
+                                          child: Text(
+                                            storyList[index].storyname,
+                                            style: Variables.sStyle,
+                                          ),
+                                        ),
+                                      );
+                                    }))),
                       );
                     },
                   ),
                 ),
               ],
-            ));
+    );
+        }
+    );
   }
 }
