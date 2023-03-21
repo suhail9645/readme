@@ -27,4 +27,7 @@ class Variables {
    static String? userEmail;
    static String? userName;
    static ValueNotifier<int>bottemIndex=ValueNotifier(0);
+   static const Color appBackground= Color.fromARGB(255, 46, 47, 55);
+  static ValueNotifier <String>searchvalue=ValueNotifier('');
+   static ValueNotifier<String> categoryName = ValueNotifier('');
 }

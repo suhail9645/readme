@@ -4,7 +4,7 @@ part 'model_story.g.dart';
 @HiveType(typeId: 1)
 class Story {
   @HiveField(0)
-   int? id;
+  int? id;
   @HiveField(1)
   final String storyname;
   @HiveField(2)
@@ -15,9 +15,14 @@ class Story {
   final String category;
   @HiveField(5)
   final String story;
+  @HiveField(6)
+  final String firUid;
+  @HiveField(7)
+  bool isFavorite ;
+ 
 
-  Story(
-      {required this.storyname,
+  Story({required this.isFavorite,required this.firUid, 
+      required this.storyname,
       required this.authorname,
       required this.story,
       required this.category,

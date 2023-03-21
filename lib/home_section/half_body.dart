@@ -28,7 +28,7 @@ class HalfBody extends StatelessWidget {
                Text('Best seller',style: Variables.mStyle),
               ],
             ),
-            ScrollList( value: storyValues,),
+            ScrollList( value: storyValues, category: 'Best seller',),
             Row(
               children: [Image.asset('assets/top.png',height: 30,),
                 const SizedBox(
@@ -37,7 +37,7 @@ class HalfBody extends StatelessWidget {
                   Text('Top Ten',style: Variables.mStyle),
               ],
             ),
-              ScrollList( value: storyValues,),
+              ScrollList( value: storyValues, category: 'Motivation',),
                  Row(
               children: [Image.asset('assets/new.png',height: 30,),
                 const SizedBox(
@@ -46,7 +46,7 @@ class HalfBody extends StatelessWidget {
                   Text('Newly Published',style: Variables.mStyle),
               ],
             ),
-              ScrollList( value: storyValues,),
+              ScrollList( value: storyValues, category: 'Fitness',),
           
           ],
         ),

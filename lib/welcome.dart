@@ -8,7 +8,7 @@ import 'login_section/login.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key, required this.value});
-final bool value;
+final bool? value;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +77,14 @@ final bool value;
                     backgroundColor: MaterialStatePropertyAll(
                         Color.fromARGB(255, 9, 60, 106))),
                 onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>value?const AddPage():const LoginPage(),));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+                if(value==null||value==false){
+                  return LoginPage();
+                }
+                else{
+                  return AddPage();
+                }
+              }));
                 },
                 child: Text(
                   'GET STARTED',

@@ -22,14 +22,16 @@ class StoryAdapter extends TypeAdapter<Story> {
       story: fields[5] as String,
       category: fields[4] as String,
       image: fields[3] as String,
+      firUid: fields[6] as String,
       id: fields[0] as int?,
+       isFavorite: fields[7] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Story obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +43,11 @@ class StoryAdapter extends TypeAdapter<Story> {
       ..writeByte(4)
       ..write(obj.category)
       ..writeByte(5)
-      ..write(obj.story);
+      ..write(obj.story)
+      ..writeByte(6)
+      ..write(obj.firUid)
+      ..writeByte(7)
+      ..write(obj.isFavorite);
   }
 
   @override

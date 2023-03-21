@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:read_me/fuctions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
+import 'package:read_me/profile_section/favorite_list.dart';
+import 'package:read_me/profile_section/file_list.dart';
 
-class ProfilePage extends StatelessWidget {
+import '../file_section/read_file.dart';
+import '../model_file/model_file.dart';
+
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,11 +46,12 @@ class ProfilePage extends StatelessWidget {
                           color: Colors.white,
                         )),
                     IconButton(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.settings,
-                          color: Colors.white,
-                        ))
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -60,15 +74,19 @@ class ProfilePage extends StatelessWidget {
                           Variables.userEmail!,
                           style: Variables.mStyle,
                         ),
-                        Text(Variables.userName!,
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white)),
+                        Text(
+                          Variables.userName!,
+                          style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
                         OutlinedButton(
-                            style: ButtonStyle(
-                                side: MaterialStatePropertyAll(
-                                    BorderSide(color: Colors.white))),
+                            style: const ButtonStyle(
+                              side: MaterialStatePropertyAll(
+                                BorderSide(color: Colors.white),
+                              ),
+                            ),
                             onPressed: () {},
                             child: Text(
                               'Edit Profile',
@@ -86,12 +104,16 @@ class ProfilePage extends StatelessWidget {
                   width: 220,
                   child: ElevatedButton(
                       style: const ButtonStyle(
-                          shape: MaterialStatePropertyAll(
-                              RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)))),
-                          backgroundColor:
-                              MaterialStatePropertyAll(Variables.mColor)),
+                        shape: MaterialStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                        ),
+                        backgroundColor:
+                            MaterialStatePropertyAll(Variables.mColor),
+                      ),
                       onPressed: () {},
                       child: Row(
                         children: [
@@ -111,92 +133,114 @@ class ProfilePage extends StatelessWidget {
               Expanded(
                 child: Container(
                   decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 46, 47, 55),
-                      borderRadius: BorderRadiusDirectional.only(
-                          topStart: Radius.circular(30),
-                          topEnd: Radius.circular(30))),
+                    color: Color.fromARGB(255, 46, 47, 55),
+                    borderRadius: BorderRadiusDirectional.only(
+                      topStart: Radius.circular(30),
+                      topEnd: Radius.circular(30),
+                    ),
+                  ),
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            TextButton.icon(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.favorite,
-                                color: Colors.red,
-                              ),
-                              label: Text(
-                                'Favorite',
-                                style: Variables.mStyle,
-                              ),
-                            ),
-                            TextButton.icon(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.file_copy,
-                                color: Color.fromARGB(238, 28, 135, 4),
-                              ),
-                              label: Text(
-                                'Library',
-                                style: Variables.mStyle,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                          child: ValueListenableBuilder(
-                        valueListenable: ClassFunctions.favorite,
-                        builder: (context, value, child) =>
-                            SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                            children: value
-                                .map(
-                                  (e) => ListTile(
-                                    title: Text(
-                                      e.storyname,
-                                      style: Variables.mStyle,
-                                    ),
-                                    leading: ClipRRect(
-                                      child: Image.network(e.image,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                        return Container(
-                                          height: 120,
-                                          width: 70,
-                                          color: Colors.black12,
-                                          child: Center(
-                                            child: Text(
-                                              'Network is too busy',
-                                              style: Variables.sStyle,
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                    ),
-                                    subtitle: Text(
-                                      'by ${e.authorname}',
-                                      style: Variables.sStyle,
-                                    ),
-                                    trailing: IconButton(
-                                      onPressed: () {
-                                        ClassFunctions.deleteFavorite(e.id!);
-                                      },
-                                      icon: const Icon(
-                                        Icons.delete,
-                                      ),
-                                      color: Colors.red,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                shape: const MaterialStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
                                     ),
                                   ),
-                                )
-                                .toList(),
+                                ),
+                                elevation: currentIndex == 0
+                                    ? const MaterialStatePropertyAll(8)
+                                    : const MaterialStatePropertyAll(0),
+                                backgroundColor: currentIndex == 0
+                                    ? const MaterialStatePropertyAll(
+                                        Variables.appBackground)
+                                    : const MaterialStatePropertyAll(
+                                        Color.fromARGB(255, 36, 36, 37)),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  currentIndex = 0;
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(5, 19, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                    ),
+                                    SizedBox(
+                                      width: currentIndex == 0 ? 9 : 6,
+                                    ),
+                                    Text(
+                                      'Favorite',
+                                      style: Variables.mStyle,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      )),
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                shape: const MaterialStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(20),
+                                    ),
+                                  ),
+                                ),
+                                elevation: currentIndex == 1
+                                    ? const MaterialStatePropertyAll(8)
+                                    : const MaterialStatePropertyAll(0),
+                                backgroundColor: currentIndex == 1
+                                    ? const MaterialStatePropertyAll(
+                                        Variables.appBackground)
+                                    : const MaterialStatePropertyAll(
+                                        Color.fromARGB(255, 35, 36, 42)),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  currentIndex = 1;
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(5, 19, 0, 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.file_copy,
+                                      color: Colors.green,
+                                    ),
+                                    SizedBox(
+                                      width: currentIndex == 1 ? 9 : 6,
+                                    ),
+                                    Text(
+                                      'Files',
+                                      style: Variables.mStyle,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: currentIndex == 0
+                            ?const FavoriteList()
+                            :const FileList()
+                      ),
                     ],
                   ),
                 ),

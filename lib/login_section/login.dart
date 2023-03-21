@@ -1,12 +1,13 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:lottie/lottie.dart';
 import 'package:read_me/fuctions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
-
 import 'package:read_me/register_section/register.dart';
-
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:read_me/widgets/widgets.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,6 +22,31 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _password = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool load = false;
+  late StreamSubscription subscription;
+  var isDeviceConnected = false;
+ 
+  @override
+  void initState() {
+    getConnectivity();
+    super.initState();
+  }
+
+  void getConnectivity() {
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) async {
+      isDeviceConnected = await InternetConnectionChecker().hasConnection;
+      if (!isDeviceConnected) {
+        showDialogBox();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,31 +188,34 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.fromLTRB(14, 20, 14, 0),
                 child: ElevatedButton(
                     style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Variables.mColor)),
+                        backgroundColor:
+                            MaterialStatePropertyAll(Variables.mColor)),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         setState(() {
                           load = true;
                         });
                         await ClassFunctions.login(
-                            _email.text, _password.text, context,);
+                          _email.text,
+                          _password.text,
+                          context,
+                        );
                         setState(() {
                           load = false;
                         });
                       }
                     },
                     child: load
-                        ?Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text('Please wait'),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            CustomIndigator()
-                          ],
-                        )
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text('Please wait'),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              CustomIndigator()
+                            ],
+                          )
                         : Text(
                             'Login',
                             style: GoogleFonts.poppins(fontSize: 18),
@@ -210,11 +239,45 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ]),
-              
             ],
           ),
         )
       ],
     ));
+  }
+
+  void showDialogBox() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: Variables.appBackground,
+              actionsAlignment: MainAxisAlignment.center,
+              title: Lottie.asset('assets/animations/no_internet.json',
+                  height: 100, width: 100),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'No Internet',
+                    style: Variables.mStyle,
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Variables.mColor)),
+                    onPressed: () async {
+                      isDeviceConnected =
+                          await InternetConnectionChecker().hasConnection;
+                      if (isDeviceConnected) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Try again'))
+              ],
+            ));
   }
 }

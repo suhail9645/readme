@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:read_me/fuctions/functions.dart';
-import 'package:read_me/welcome.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});

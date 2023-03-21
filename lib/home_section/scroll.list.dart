@@ -10,14 +10,15 @@ class ScrollList extends StatelessWidget {
   const ScrollList({
     super.key,
    
-    required this.value,
+    required this.value, required this.category,
   });
   
   final Box<Story> value;
+  final String category;
   // final Box<Story> value;
   @override
   Widget build(BuildContext context) {
-    List<Story> categoryStory=ClassFunctions.sepratingStory(value,'Adventure');
+    List<Story> categoryStory=ClassFunctions.sepratingStory(value,category);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -26,13 +27,13 @@ class ScrollList extends StatelessWidget {
                 padding: const EdgeInsets.all(6.0),
                 child: GestureDetector(
                   onTap: () async {
-                    bool isFavorite = await ClassFunctions.isFavorite(e.id!);
+                 
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => ReadPage(
                         story: e,
-                        isFavorite: isFavorite,
                       ),
-                    ));
+                    ),
+                    );
                   },
                   child: Container(
                     width: 70,

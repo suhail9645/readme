@@ -16,7 +16,7 @@ class CategoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
    
     return ValueListenableBuilder(
-        valueListenable: ClassFunctions.categoryName,
+        valueListenable: Variables.categoryName,
         builder: (context, categoryName, child) {
           List<Story> storyList =
         ClassFunctions.sepratingStory(storyValues,categoryName);
@@ -46,12 +46,11 @@ class CategoryPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () async {
-                          bool isFavor = await ClassFunctions.isFavorite(
-                              storyList[index].id!);
+                     
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ReadPage(
                               story: storyList[index],
-                              isFavorite: isFavor,
+                          
                             ),
                           ));
                         },

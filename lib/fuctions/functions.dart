@@ -1,43 +1,21 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:read_me/home_section/home.dart';
 import 'package:read_me/home_section/variables.dart';
-import 'package:read_me/model_favorite/model_favorite.dart';
+import 'package:read_me/model_file/model_file.dart';
 import 'package:read_me/widgets/widgets.dart';
 import '../admin/add_page.dart';
 import '../home_section/home_two.dart';
 import '../model/model_story.dart';
 import '../welcome.dart';
+import 'package:file_picker/file_picker.dart';
 
 class ClassFunctions {
-  // static ValueNotifier<List<Story>> romance = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> history = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> fitness = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> horror = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> thriller = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> motivation = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> adventure = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> topten = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> trend = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> newly = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> best = ValueNotifier([]);
-  // static ValueNotifier<List<Story>> other = ValueNotifier([]);
-  // static List<ValueNotifier<List<Story>>> category = [
-  //   romance,
-  //   history,
-  //   fitness,
-  //   horror,
-  //   thriller,
-  //   motivation,
-  //   adventure,
-  //   topten,
-  //   trend,
-  //   newly,
-  //   best,
-  //   other
-  // ];
   //login function
   static Future<void> login(
       String email, String password, BuildContext context) async {
@@ -68,7 +46,7 @@ class ClassFunctions {
 
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
-                builder: (context) => const HomePageTwo(),
+                builder: (context) => FirstHome(),
               ),
               (route) => false);
         }
@@ -95,7 +73,7 @@ class ClassFunctions {
       if (userCredential != null) {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => const HomePageTwo(),
+              builder: (context) => HomePageTwo(),
             ),
             (route) => false);
       }
@@ -113,9 +91,8 @@ class ClassFunctions {
     }
   }
 
-  static Future<void> getdata() async {
-    await Hive.openBox<Story>('story');
-    await Hive.deleteBoxFromDisk('story');
+// refreshing function ,feching in firebase and add to hive
+  static Future<Box<Story>> getdata() async {
     final storyDb = await Hive.openBox<Story>('story');
     final Query query = FirebaseFirestore.instance.collection('story');
     final QuerySnapshot querySnapshot = await query.get();
@@ -124,119 +101,47 @@ class ClassFunctions {
           querySnapshot.docs[element].data() as Map<String, dynamic>;
 
       final story = Story(
-          storyname: data['storyName'],
-          authorname: data['authorName'],
-          story: data['story'],
-          category: data['category'],
-          image: data['image']);
-
-      story.id = await storyDb.add(story);
-      await storyDb.put(story.id, story);
+        storyname: data['storyName'],
+        authorname: data['authorName'],
+        story: data['story'],
+        category: data['category'],
+        image: data['image'],
+        firUid: querySnapshot.docs[element].id,
+        isFavorite: false,
+      );
+      bool flag = true;
+      for (var element in storyDb.values) {
+        if (element.firUid == story.firUid) {
+          flag = false;
+        }
+      }
+      if (flag) {
+        story.id = await storyDb.add(story);
+        await storyDb.put(story.id, story);
+      }
     }
-    await storyDb.close();
-    // getAllFromHive();
+    return storyDb;
   }
 
-  // static Future<void> getAllFromHive() async {
-  //   final storyDb = await Hive.openBox<Story>('story');
-  //   for (var element in category) {
-  //     element.value.clear();
-  //   }
-  //   for (var element in storyDb.values) {
-  //     if (element.category == 'Romance') {
-  //       romance.value.add(element);
-  //     } else if (element.category == 'History') {
-  //       history.value.add(element);
-  //     } else if (element.category == 'Fitness') {
-  //       fitness.value.add(element);
-  //     } else if (element.category == 'Horror') {
-  //       horror.value.add(element);
-  //     } else if (element.category == 'Thriller') {
-  //       thriller.value.add(element);
-  //     } else if (element.category == 'Motivation') {
-  //       motivation.value.add(element);
-  //     } else if (element.category == 'Adventure') {
-  //       adventure.value.add(element);
-  //     } else if (element.category == 'Top 10') {
-  //       topten.value.add(element);
-  //     } else if (element.category == 'Trending now') {
-  //       trend.value.add(element);
-  //     } else if (element.category == 'Newly published') {
-  //       newly.value.add(element);
-  //     } else if (element.category == 'Best seller') {
-  //       best.value.add(element);
-  //     } else if (element.category == 'Other') {
-  //       other.value.add(element);
-  //     }
-  //   }
-  //   await storyDb.close();
-  // }
-
+// adding and deleting favorite
   static Future<void> addFavorite(Story favorite) async {
     final storyDb = await Hive.openBox<Story>('story');
-    final favoriteDb = await Hive.openBox<Favorite>('favorite');
-
-    //  int id=await favoriteDb.add(favorite);
-    //  favoriteDb.
-    for (var element in storyDb.values) {
-      if (element == favorite) {
-        final favor = Favorite(element.id!);
-
-        favor.id = await favoriteDb.add(favor);
-        favoriteDb.put(favor.id, favor);
-        break;
-      }
-    }
-    await storyDb.close();
-    getFavorite();
+    favorite.isFavorite = !favorite.isFavorite;
+    storyDb.put(favorite.id, favorite);
   }
 
-  static ValueNotifier<Set<Story>> favorite = ValueNotifier({});
-  static Future<void> getFavorite() async {
-    final storyDb = await Hive.openBox<Story>('story');
-    final favoriteDb = await Hive.openBox<Favorite>('favorite');
-    favorite.value.clear();
-    for (var element in favoriteDb.values) {
-      if (storyDb.keys.contains(element.favoriteId)) {
-        final value = storyDb.getAt(element.favoriteId);
-        favorite.value.add(value!);
-      }
-    }
-    await storyDb.close();
-    favorite.notifyListeners();
-  }
-
-  static Future<bool> isFavorite(dynamic fKey) async {
-    final favoriteDb = await Hive.openBox<Favorite>('favorite');
-
-    if (favoriteDb.values.contains(fKey)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  static Future<void> deleteFavorite(int id) async {
-    final favoriteDb = await Hive.openBox<Favorite>('favorite');
-    for (var element in favoriteDb.values) {
-      if (element.favoriteId == id) {
-        favoriteDb.delete(element.id);
-        await getFavorite();
-        break;
-      }
-    }
-  }
-
+// admin loging and logout
   static Future<void> adminIsLog(bool value, BuildContext context) async {
     final adminDb = await Hive.openBox<bool>('admin');
     adminDb.put(0, value);
     Hive.close();
   }
 
+  // Splash screen function checking user or admin ,is already logged in
   static Future<void> splash(BuildContext context) async {
     await Future.delayed(const Duration(seconds: 3));
     final adminDb = await Hive.openBox('admin');
-    bool value = adminDb.get(0);
+    bool? value = adminDb.get(0);
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => WelcomePage(
         value: value,
@@ -245,7 +150,8 @@ class ClassFunctions {
     Hive.close();
   }
 
-  static List<Story> sepratingStory(Box<Story> boxStory,String category)  {
+// This for seprating stories from hive
+  static List<Story> sepratingStory(Box<Story> boxStory, String category) {
     List<Story> storyList = boxStory.values.toList();
     List<Story> categoryStory = [];
     for (var element in storyList) {
@@ -255,6 +161,44 @@ class ClassFunctions {
     }
     return categoryStory;
   }
-  
-     static ValueNotifier<String>categoryName=ValueNotifier('');   
+
+// This function for picking in phone and adding in to hive
+  static Future<void> fileSelection() async {
+    final fileDb = await Hive.openBox<FileCollection>('files');
+    final result = await FilePicker.platform.pickFiles(
+        allowedExtensions: ['pdf'],
+        allowMultiple: false,
+        type: FileType.custom);
+    if (result != null) {
+      String extension = result.paths.first!.split('.').last;
+      String name = result.names.first!;
+      File pdf = File(result.files.first.path!);
+      String date = DateTime.now().toString().split('.').first;
+      if (extension.toLowerCase() == 'pdf') {
+        final file = FileCollection(name, pdf.path, date);
+        file.id = await fileDb.add(file);
+        fileDb.put(file.id, file);
+        //  Hive.close();
+      }
+    }
+  }
+
+// This function for delete file from Hive
+  static Future<void> deleteFile(int index) async {
+    final fileDb = await Hive.openBox<FileCollection>('files');
+    fileDb.deleteAt(index);
+  }
+
+  // This function for seprating favorite stories in Hive
+  static List<Story> favoriteGet(Box<Story> boxStory) {
+    List<Story> storyList = boxStory.values.toList();
+
+    List<Story> categoryStory = [];
+    for (var element in storyList) {
+      if (element.isFavorite) {
+        categoryStory.add(element);
+      }
+    }
+    return categoryStory;
+  }
 }

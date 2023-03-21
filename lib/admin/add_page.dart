@@ -41,7 +41,7 @@ class _AddPageState extends State<AddPage> {
         title:Text('Admin Page',style: Variables.mStyle,),
         actions: [
           IconButton(onPressed: () {
-           CustomAwesome(context: context,content: 'Admin Page',)..show();
+           CustomAwesome(context: context,content: 'Admin Page',).show();
           }, icon:const Icon(Icons.logout))
         ],
       ),
@@ -478,7 +478,8 @@ class _AddPageState extends State<AddPage> {
         storyname: _storyname.text,
         authorname: _authorname.text,
         story: fileurl!,
-        category: grpval);
+        category: grpval,
+        firUid: 'j', isFavorite: false,);
     story.add(storydata.toJson()).whenComplete(() => ScaffoldMessenger(
         child: CustomSnackBar(contentText: 'successfully added')));
   }

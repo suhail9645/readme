@@ -1,11 +1,12 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:read_me/model_favorite/model_favorite.dart';
+import 'package:read_me/model_file/model_file.dart';
 import 'package:read_me/splash.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'model/model_story.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -17,14 +18,24 @@ void main() async {
   if(!Hive.isAdapterRegistered(FavoriteAdapter().typeId)){
     Hive.registerAdapter(FavoriteAdapter());
   }
-//  final db=await Hive.openBox<Favorite>('favorite');
+  if(!Hive.isAdapterRegistered(FileCollectionAdapter().typeId)){
+    Hive.registerAdapter(FileCollectionAdapter());
+  }
+//  final db=await Hive.openBox<Story>('story');
 //  db.clear();
   
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,4 +48,5 @@ class MyApp extends StatelessWidget {
       home: const SplashScreen(),
     );
   }
+ 
 }

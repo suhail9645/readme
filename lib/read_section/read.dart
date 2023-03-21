@@ -6,9 +6,9 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../model/model_story.dart';
 
 class ReadPage extends StatefulWidget {
-  const ReadPage({super.key, required this.story, required this.isFavorite});
+  const ReadPage({super.key, required this.story});
   final Story story;
-  final bool isFavorite;
+  
   @override
   State<ReadPage> createState() => _ReadPageState();
 }
@@ -29,7 +29,7 @@ class _ReadPageState extends State<ReadPage> {
               });
             },
             child: Icon(
-              dark ? Icons.dark_mode : Icons.dark_mode_outlined,
+              dark? Icons.dark_mode : Icons.dark_mode_outlined,
               color: Colors.black,
               size: 30,
             ),
@@ -39,13 +39,13 @@ class _ReadPageState extends State<ReadPage> {
           ),
           GestureDetector(
             onTap: () {
-              widget.isFavorite
-                  ? ClassFunctions.deleteFavorite(widget.story.id!)
-                  : ClassFunctions.addFavorite(widget.story);
+              // widget.isFavorite
+              //     ? ClassFunctions.deleteFavorite(widget.story.id!)
+                   ClassFunctions.addFavorite(widget.story);
               setState(() {});
             },
             child: Icon(
-              widget.isFavorite ? Icons.favorite : Icons.favorite_border,
+              widget.story.isFavorite ? Icons.favorite : Icons.favorite_border,
               color: Colors.red,
               size: 30,
             ),
