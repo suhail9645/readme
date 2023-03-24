@@ -3,8 +3,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:read_me/fuctions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
+import 'package:read_me/premium_section/premium.dart';
+import 'package:read_me/profile_section/edit_profile.dart';
 import 'package:read_me/profile_section/favorite_list.dart';
 import 'package:read_me/profile_section/file_list.dart';
+import 'package:read_me/settings/setting.dart';
 
 import '../file_section/read_file.dart';
 import '../model_file/model_file.dart';
@@ -40,13 +43,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         icon: const Icon(
                           Icons.arrow_back,
                           color: Colors.white,
                         )),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) =>const SettingPage(),));
+                      },
                       icon: const Icon(
                         Icons.settings,
                         color: Colors.white,
@@ -59,10 +66,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: const EdgeInsets.fromLTRB(15, 20, 0, 10),
                 child: Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDtd0soCSRdpo8Y5klekJdABh4emG2P29jwg&usqp=CAU'),
+                      backgroundImage: NetworkImage(Variables.userProfile ??
+                          'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
                     ),
                     const SizedBox(
                       width: 15,
@@ -71,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          Variables.userEmail!,
+                          Variables.userfullName!,
                           style: Variables.mStyle,
                         ),
                         Text(
@@ -87,7 +94,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                 BorderSide(color: Colors.white),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const EditPage(),
+                              ));
+                            },
                             child: Text(
                               'Edit Profile',
                               style: Variables.sStyle,
@@ -114,7 +125,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundColor:
                             MaterialStatePropertyAll(Variables.mColor),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const PremiumPage(),
+                        ));
+                      },
                       child: Row(
                         children: [
                           const Icon(Icons.arrow_forward),
@@ -237,10 +252,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                       Expanded(
-                        child: currentIndex == 0
-                            ?const FavoriteList()
-                            :const FileList()
-                      ),
+                          child: currentIndex == 0
+                              ? const FavoriteList()
+                              : const FileList()),
                     ],
                   ),
                 ),

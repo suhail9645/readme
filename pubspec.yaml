@@ -101,6 +101,7 @@ flutter:
     - assets/animations/warning-animation.json
     - assets/animations/no_internet.json
     - assets/animations/warning.json
+    - assets/profile_dummy.jpg
 
 
   #  - images/a_dot_burr.jpeg

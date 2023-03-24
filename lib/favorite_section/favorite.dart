@@ -14,26 +14,23 @@ class FavoritePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Variables.appBackground,
-      appBar: PreferredSize(
-        preferredSize: const Size(double.infinity, 100),
-        child: AppBar(
-          backgroundColor: Variables.mColor,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Favorite',
-                style: Variables.mStyle,
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              const Icon(
-                Icons.favorite,
-                color: Colors.red,
-              )
-            ],
-          ),
+      appBar: AppBar(
+        backgroundColor: Variables.mColor,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Favorite',
+              style: Variables.mStyle,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            const Icon(
+              Icons.favorite,
+              color: Colors.red,
+            )
+          ],
         ),
       ),
       body: SafeArea(
@@ -122,13 +119,6 @@ class FavoritePage extends StatelessWidget {
                 return CircularProgressIndicator();
               }
             }),
-        //     child: Center(
-        //   child: Column(children: [
-        //     Lottie.network(
-        //         'https://assets9.lottiefiles.com/packages/lf20_xNEYcvnqso.json'),
-        //         Text('NO FAVORITE ITEMS',style: Variables.mStyle,)
-        //   ]),
-        // ),
       ),
       bottomNavigationBar: const CustomBottom(),
     );

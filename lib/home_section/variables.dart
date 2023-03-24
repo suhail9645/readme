@@ -24,10 +24,11 @@ class Variables {
       static ValueNotifier<bool>onTap=ValueNotifier(true);
       
    static const Color mColor=Color.fromARGB(255, 9, 60, 106);   
-   static String? userEmail;
+   static String? userfullName;
    static String? userName;
+   static String? userProfile;
    static ValueNotifier<int>bottemIndex=ValueNotifier(0);
    static const Color appBackground= Color.fromARGB(255, 46, 47, 55);
-  static ValueNotifier <String>searchvalue=ValueNotifier('');
+   static ValueNotifier <String>searchvalue=ValueNotifier('');
    static ValueNotifier<String> categoryName = ValueNotifier('');
 }

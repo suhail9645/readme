@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:read_me/fuctions/functions.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/login_section/login.dart';
+import 'package:read_me/register_section/register_functions.dart';
 import 'package:read_me/widgets/widgets.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -12,13 +18,16 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
-
   final TextEditingController _password = TextEditingController();
   final TextEditingController _username = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
   bool load = false;
+  File? userImage;
+  String? extension;
+  String? oldUser ;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,9 +64,6 @@ class _RegisterPageState extends State<RegisterPage> {
           key: formKey,
           child: ListView(
             children: [
-              const SizedBox(
-                height: 120,
-              ),
               Center(
                 child: Text(
                   'Register',
@@ -75,9 +81,134 @@ class _RegisterPageState extends State<RegisterPage> {
                       fontSize: 20),
                 ),
               ),
-               Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                  height: 130,
+                                  width: double.infinity,
+                                  color: Variables.appBackground,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            userImage = await RegisterFunction
+                                                .imagePicking(
+                                                    ImageSource.gallery);
+                                                    if(userImage!=null){
+                                            extension =
+                                                userImage!.path.split('.').last;
+                                                    }
+                                            setState(() {
+                                              userImage = userImage;
+                                            });
+                                          },
+                                          child: SizedBox(
+                                            width: 120,
+                                            child: Row(
+                                              children: const [
+                                                Text(
+                                                  'From Gallery',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                                Icon(Icons.photo,
+                                                    color: Colors.white)
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            userImage = await RegisterFunction
+                                                .imagePicking(
+                                                    ImageSource.camera);
+                                            setState(() {
+                                              userImage = userImage;
+                                            });
+                                          },
+                                          child: SizedBox(
+                                            width: 120,
+                                            child: Row(
+                                              children: const [
+                                                Text(
+                                                  'From Camera',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                                Icon(Icons.camera,
+                                                    color: Colors.white)
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ));
+                            },
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage: userImage == null
+                              ? const AssetImage('assets/profile_dummy.jpg')
+                              : FileImage(File(userImage!.path))
+                                  as ImageProvider,
+                          radius: 70,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 10, 5, 0),
+                    child: Text(
+                      'Enter Your Full Name',
+                      style: GoogleFonts.poppins(color: Colors.white),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
+                    child: TextFormField(
+                      controller: _name,
+                      decoration: const InputDecoration(
+                          hintText: 'eg:suhail',
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 9, 60, 106),
+                                  width: 2)),
+                          contentPadding: EdgeInsets.all(10),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          )),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'This field is required';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(14, 10, 5, 0),
                     child: Text(
@@ -108,6 +239,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'This field is required';
+                        }
+                        if(oldUser==value){
+                          return 'This user name already in use';
                         }
                         return null;
                       },
@@ -155,7 +289,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ],
               ),
-              
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -209,25 +342,34 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (formKey.currentState!.validate()) {
                         setState(() {
                           load = true;
+                          
                         });
-                        await ClassFunctions.register(
-                            _email.text, _password.text,_username.text,context,);
+                        oldUser = await RegisterFunction.register(
+                          _email.text,
+                          _password.text,
+                          _username.text,
+                          _name.text,
+                          userImage,
+                          extension,
+                          context,
+                        );
                         setState(() {
+                        
                           load = false;
                         });
                       }
                     },
                     child: load
-                        ?Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text('Please wait'),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            CustomIndigator()
-                          ],
-                        )
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text('Please wait'),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              CustomIndigator()
+                            ],
+                          )
                         : Text(
                             'Register',
                             style: GoogleFonts.poppins(fontSize: 18),
@@ -240,15 +382,16 @@ class _RegisterPageState extends State<RegisterPage> {
                       color: const Color.fromARGB(255, 157, 156, 156)),
                 ),
                 TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ));
-                    },
-                    child: Text(
-                      'Login',
-                      style: GoogleFonts.poppins(color: Colors.white),
-                    ))
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ));
+                  },
+                  child: Text(
+                    'Login',
+                    style: GoogleFonts.poppins(color: Colors.white),
+                  ),
+                ),
               ])
             ],
           ),

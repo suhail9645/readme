@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:read_me/model_favorite/model_favorite.dart';
 import 'package:read_me/model_file/model_file.dart';
 import 'package:read_me/splash.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -15,15 +14,11 @@ void main() async {
   if (!Hive.isAdapterRegistered(StoryAdapter().typeId)) {
     Hive.registerAdapter(StoryAdapter());
   }
-  if(!Hive.isAdapterRegistered(FavoriteAdapter().typeId)){
-    Hive.registerAdapter(FavoriteAdapter());
-  }
+  
   if(!Hive.isAdapterRegistered(FileCollectionAdapter().typeId)){
     Hive.registerAdapter(FileCollectionAdapter());
   }
-//  final db=await Hive.openBox<Story>('story');
-//  db.clear();
-  
+
   runApp(const MyApp());
 }
 

@@ -18,41 +18,32 @@ class FilePage extends StatelessWidget {
       key: _scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Variables.appBackground,
-      // appBar: const MyAppBar(
-      //   title: 'From File',
-      //   subtitle: 'You can Pick PDF files from your phone',
-      // ),
-      appBar: PreferredSize(
-        preferredSize: const Size(double.infinity, 100),
-        child: AppBar(
-          backgroundColor: Variables.mColor,
-          title: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Files',
-                    style: Variables.mStyle,
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  const Icon(
-                    Icons.file_copy,
-                    color: Colors.green,
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                'You can pick files from your phone',
-                style: Variables.sStyle,
-              )
-            ],
-          ),
+      appBar: AppBar(
+        backgroundColor: Variables.mColor,
+        title: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Files',
+                  style: Variables.mStyle,
+                ),
+             
+                const Icon(
+                  Icons.file_copy,
+                  color: Colors.green,
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'You can pick files from your phone',
+              style: Variables.sStyle,
+            )
+          ],
         ),
       ),
       body: SafeArea(
@@ -97,8 +88,15 @@ class FilePage extends StatelessWidget {
                               ),
                               trailing: IconButton(
                                   onPressed: () {
-                                    //  CustomAlertBox(context:  _scaffoldKey.currentContext!, content:'Delete this file ?').show();
-                                    ClassFunctions.deleteFile(index);
+                                 showDialog(context: context, builder: (context) =>    CustomAlert(
+                                      content: 'Are you this file from readme',
+                                      context: context,
+                                      onPress: () {
+                                        ClassFunctions.deleteFile(index);
+                                        Navigator.pop(context);
+                                      },
+                                    ),);
+                                    // ClassFunctions.deleteFile(index);
                                   },
                                   icon: const Icon(
                                     Icons.delete,

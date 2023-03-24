@@ -5,7 +5,6 @@ import 'package:read_me/fuctions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:read_me/login_section/login.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:lottie/lottie.dart';
 
 class CustomIndigator extends SizedBox {
@@ -47,8 +46,7 @@ class MyAppBar extends StatelessWidget {
   });
   final String title;
   final String subtitle;
- 
-  
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -61,21 +59,11 @@ class MyAppBar extends StatelessWidget {
         title,
         style: Variables.mStyle,
       ),
-     
       centerTitle: true,
       actions: [],
     );
   }
 }
-
-// class CustomAlertBox extends AlertDialog {
-//  const CustomAlertBox({super.key})
-//       : super(
-//             title:const Text(
-//           'Are you Sure',
-//           style: TextStyle(),
-//         ));
-// }
 
 class CustomAwesome extends AwesomeDialog {
   CustomAwesome({required super.context, required content})
@@ -89,7 +77,7 @@ class CustomAwesome extends AwesomeDialog {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => const LoginPage(),
             ));
-            ClassFunctions.adminIsLog(false, context);
+            ClassFunctions.adminIsLog(false);
           },
         );
 }
@@ -100,82 +88,54 @@ class CustomBottom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: Variables.bottemIndex,
-      builder: (context, values, child) => BottomNavigationBar(
-          onTap: (value) {
-            Variables.bottemIndex.value = value;
-            Variables.onTap.value = true;
-          },
-          currentIndex: values,
-          elevation: 5,
-          selectedItemColor: const Color.fromARGB(255, 63, 143, 213),
-          unselectedItemColor: Colors.white,
-          backgroundColor: const Color.fromARGB(57, 85, 85, 87),
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                color: Color.fromARGB(255, 237, 241, 239),
+        valueListenable: Variables.bottemIndex,
+        builder: (context, values, child) {
+          List<Color> bottemItemColor = const [
+            Color.fromARGB(255, 63, 143, 213),
+            Color.fromARGB(255, 8, 225, 55),
+            Color.fromARGB(255, 247, 187, 7),
+            Colors.red,
+          ];
+          return BottomNavigationBar(
+            onTap: (value) {
+              Variables.bottemIndex.value = value;
+              Variables.onTap.value = true;
+            },
+            currentIndex: values,
+            elevation: 5,
+            selectedItemColor: bottemItemColor[values],
+            unselectedItemColor: Colors.white,
+            backgroundColor: const Color.fromARGB(57, 85, 85, 87),
+            type: BottomNavigationBarType.fixed,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.home,
+                ),
+                label: 'Home',
               ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.file_copy,
-                color: Color.fromARGB(255, 8, 225, 55),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.file_copy,
+                ),
+                label: 'File',
               ),
-              label: 'File',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.star,
-                color: Color.fromARGB(255, 247, 187, 7),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.star,
+                ),
+                label: 'Premium',
               ),
-              label: 'Premium',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.favorite,
-                color: Colors.red,
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.favorite,
+                ),
+                label: 'Favorite',
               ),
-              label: 'Favorite',
-            ),
-          ]),
-    );
+            ],
+          );
+        });
   }
-}
-
-class CustomAlertBox extends Alert {
-  CustomAlertBox({required super.context, required content})
-      : super(
-          type: AlertType.warning,
-          style: const AlertStyle(backgroundColor: Variables.appBackground),
-          // content:Image(image:AssetImage('assets/MOON.jfif'),) ,
-          title: "Are you sure",
-          desc: content,
-          buttons: [
-            DialogButton(
-              onPressed: () => Navigator.pop(context),
-              color: const Color.fromRGBO(0, 179, 134, 1.0),
-              child: const Text(
-                'YES',
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            DialogButton(
-              onPressed: () => Navigator.pop(context),
-              gradient: const LinearGradient(colors: [
-                Color.fromRGBO(116, 116, 191, 1.0),
-                Color.fromRGBO(52, 138, 199, 1.0)
-              ]),
-              child: const Text(
-                'NO',
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            )
-          ],
-        );
 }
 
 class CustomAlert extends AlertDialog {
@@ -215,8 +175,6 @@ class CustomAlert extends AlertDialog {
                     ),
                   ),
                   onPressed: onPress,
-                  
-                 
                   child: const Text('Yes'))
             ]);
 }

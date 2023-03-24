@@ -17,9 +17,7 @@ class AddPage extends StatefulWidget {
 
 class _AddPageState extends State<AddPage> {
   final TextEditingController _storyname = TextEditingController();
-
   final TextEditingController _authorname = TextEditingController();
-
   final TextEditingController _story = TextEditingController();
   String grpval = 'Romance';
   final _formKey = GlobalKey<FormState>();
@@ -454,8 +452,6 @@ class _AddPageState extends State<AddPage> {
         ScaffoldMessenger.of(context)
             .showSnackBar(CustomSnackBar(contentText: 'Please add a pdf file'));
       }
-    } else {
-      // User canceled the picker
     }
   }
 

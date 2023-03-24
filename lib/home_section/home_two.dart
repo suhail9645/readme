@@ -11,18 +11,15 @@ import '../profile_section/profile.dart';
 import '../widgets/widgets.dart';
 
 class HomePageTwo extends StatefulWidget {
-  HomePageTwo({super.key});
+ const HomePageTwo({super.key});
 
   @override
   State<HomePageTwo> createState() => _HomePageTwoState();
 }
-
 class _HomePageTwoState extends State<HomePageTwo> {
   bool isHome = true;
  TextEditingController search=TextEditingController();
   Box<Story>? story;
- 
-  // InfiniteScrollController control=InfiniteScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +35,6 @@ class _HomePageTwoState extends State<HomePageTwo> {
               setState(() {
                 isHome = false;
               });
-              // showSearch(context: context, delegate: CustomSerch(story:story!));
             },
             onChanged: (value) {
               Variables.searchvalue.value = value;
@@ -99,12 +95,10 @@ class _HomePageTwoState extends State<HomePageTwo> {
         ],
       ),
       body: isHome
-          ? SafeArea(
-           
+          ? SafeArea(   
               child: FutureBuilder(
                   future: Hive.openBox<Story>('story'),
-                  builder: (context, snapshot) {
-                
+                  builder: (context, snapshot) {               
                     if (snapshot.connectionState == ConnectionState.done) {
                       final storyDb = Hive.box<Story>('story');
                       return ValueListenableBuilder(
@@ -220,6 +214,4 @@ class _HomePageTwoState extends State<HomePageTwo> {
       bottomNavigationBar: const CustomBottom(),
     );
   }
-
- 
 }

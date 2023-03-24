@@ -1,6 +1,7 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +9,8 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:read_me/home_section/home.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/model_file/model_file.dart';
+import 'package:read_me/model_user.dart/model_user.dart';
+import 'package:read_me/register_section/register_functions.dart';
 import 'package:read_me/widgets/widgets.dart';
 import '../admin/add_page.dart';
 import '../home_section/home_two.dart';
@@ -20,10 +23,10 @@ class ClassFunctions {
   static Future<void> login(
       String email, String password, BuildContext context) async {
     if (email == dotenv.env['EMAIL'] && password == dotenv.env['PASSWORD']) {
-      adminIsLog(true, context);
+      adminIsLog(true);
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) => AddPage(),
+            builder: (context) => const AddPage(),
           ),
           (route) => false);
     } else {
@@ -33,20 +36,12 @@ class ClassFunctions {
             email: email, password: password);
 
         if (auth.currentUser != null) {
-          Variables.userEmail = auth.currentUser!.email!;
-
-          final Query query = FirebaseFirestore.instance.collection('user');
-          final QuerySnapshot querySnapshot = await query.get();
-          for (var element in querySnapshot.docs) {
-            if (element.id == auth.currentUser!.uid) {
-              Variables.userName = element.get('username');
-              break;
-            }
-          }
+          RegisterFunction.getUserDetailes(user);
+          // Variables.userfullName = auth.currentUser!.email!;
 
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
-                builder: (context) => FirstHome(),
+                builder: (context) => const FirstHome(),
               ),
               (route) => false);
         }
@@ -58,38 +53,6 @@ class ClassFunctions {
   }
 
 // register function
-  static Future<void> register(String email, String password, String username,
-      BuildContext context) async {
-    final auth = FirebaseAuth.instance;
-    try {
-      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-      _firestore
-          .collection('user')
-          .doc(userCredential.user!.uid)
-          .set({'username': username});
-
-      if (userCredential != null) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => HomePageTwo(),
-            ),
-            (route) => false);
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        ScaffoldMessenger.of(context).showSnackBar(
-            CustomSnackBar(contentText: 'This Email already in use'));
-      } else if (e.code == 'invalid-email') {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(CustomSnackBar(contentText: 'Invalid email'));
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(CustomSnackBar(contentText: 'something wrong'));
-      }
-    }
-  }
 
 // refreshing function ,feching in firebase and add to hive
   static Future<Box<Story>> getdata() async {
@@ -131,7 +94,9 @@ class ClassFunctions {
   }
 
 // admin loging and logout
-  static Future<void> adminIsLog(bool value, BuildContext context) async {
+  static Future<void> adminIsLog(
+    bool value,
+  ) async {
     final adminDb = await Hive.openBox<bool>('admin');
     adminDb.put(0, value);
     Hive.close();
