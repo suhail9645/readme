@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:lottie/lottie.dart';
-import '../fuctions/functions.dart';
+import '../functions/functions.dart';
 import '../model/model_story.dart';
 import '../read_section/read.dart';
 import '../widgets/widgets.dart';
@@ -73,7 +73,7 @@ class FavoritePage extends StatelessWidget {
                                         context: context,
                                         onPress: () {
                                           ClassFunctions.addFavorite(
-                                              favoriteStory[index]);
+                                              favoriteStory[index],context);
                                               Navigator.pop(context);
                                         },
                                       ),
@@ -116,7 +116,7 @@ class FavoritePage extends StatelessWidget {
                   },
                 );
               } else {
-                return CircularProgressIndicator();
+                return Center(child: Text('Please wait',style: Variables.mStyle,),);
               }
             }),
       ),

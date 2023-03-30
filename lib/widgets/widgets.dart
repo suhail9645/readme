@@ -1,7 +1,6 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:read_me/fuctions/functions.dart';
+import 'package:read_me/functions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:read_me/login_section/login.dart';
@@ -38,35 +37,9 @@ class CustomSnackBar extends SnackBar {
         );
 }
 
-class MyAppBar extends StatelessWidget {
-  const MyAppBar({
-    super.key,
-    required this.title,
-    required this.subtitle,
-  });
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      leading: IconButton(
-        onPressed: () {},
-        icon: const Icon(Icons.arrow_back),
-      ),
-      backgroundColor: Variables.mColor,
-      title: Text(
-        title,
-        style: Variables.mStyle,
-      ),
-      centerTitle: true,
-      actions: [],
-    );
-  }
-}
 
 class CustomAwesome extends AwesomeDialog {
-  CustomAwesome({required super.context, required content})
+  CustomAwesome({required super.context, required content, required value})
       : super(
           dialogType: DialogType.warning,
           animType: AnimType.rightSlide,
@@ -74,10 +47,12 @@ class CustomAwesome extends AwesomeDialog {
           desc: 'Are you logout from $content',
           btnCancelOnPress: () {},
           btnOkOnPress: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const LoginPage(),
-            ));
-            ClassFunctions.adminIsLog(false);
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => const LoginPage(),
+                ),
+                (route) => false);
+            ClassFunctions.logedPerson(value);
           },
         );
 }
@@ -178,3 +153,4 @@ class CustomAlert extends AlertDialog {
                   child: const Text('Yes'))
             ]);
 }
+

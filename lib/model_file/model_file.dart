@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:hive_flutter/hive_flutter.dart';
 part 'model_file.g.dart';

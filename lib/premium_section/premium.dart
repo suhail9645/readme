@@ -3,11 +3,15 @@ import 'package:read_me/home_section/variables.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/widgets.dart';
 import 'package:lottie/lottie.dart';
+
 class PremiumPage extends StatelessWidget {
-  const PremiumPage({super.key});
+ const PremiumPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    double height = size.height;
+    double width = size.width;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -36,14 +40,15 @@ class PremiumPage extends StatelessWidget {
                   height: 250,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                      color:const Color.fromARGB(255, 103, 100, 100),
+                      color: const Color.fromARGB(255, 103, 100, 100),
                       borderRadius: BorderRadius.circular(15)),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Align(
                       child: Text(
                         'Thank you for your interest in our premium section! Our team is currently working on enhancing and expanding our premium content to provide you with the best possible experience. Please stay tuned for updates, and feel free to contact us if you have any questions or suggestions. We appreciate your patience and support.',
-                        style: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
+                        style: GoogleFonts.poppins(
+                            fontSize: 16, color: Colors.white),
                       ),
                     ),
                   ),
@@ -52,12 +57,14 @@ class PremiumPage extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 260,
-            left: 30,
-            child: Lottie.network('https://assets10.lottiefiles.com/packages/lf20_oo3N9WVAgU.json',width: 280))
+              top: height / 2.8,
+              left: width / 15,
+              child: Lottie.network(
+                  'https://assets10.lottiefiles.com/packages/lf20_oo3N9WVAgU.json',
+                  height: height / 2.4))
         ],
       ),
-      bottomNavigationBar: CustomBottom(),
+      bottomNavigationBar: const CustomBottom(),
     );
   }
 }

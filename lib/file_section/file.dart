@@ -2,20 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:read_me/file_section/read_file.dart';
-import 'package:read_me/fuctions/functions.dart';
+import 'package:read_me/functions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/model_file/model_file.dart';
-
 import '../widgets/widgets.dart';
 
 class FilePage extends StatelessWidget {
   const FilePage({super.key});
-
+ 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
-      key: _scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Variables.appBackground,
       appBar: AppBar(

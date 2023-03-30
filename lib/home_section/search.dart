@@ -40,8 +40,13 @@ class SearchPage extends StatelessWidget {
                     subtitle: Text('by ${result[index].authorname}',
                         style: Variables.sStyle),
                     leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image.network(result[index].image)),
+    borderRadius: BorderRadius.circular(8.0),
+    child: Image.network(result[index].image,
+      width: 45.0,
+      height: 120,
+      fit: BoxFit.cover,
+    ),
+  ),
                   );
                 },
               )

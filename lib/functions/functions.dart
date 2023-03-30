@@ -1,19 +1,14 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:read_me/home_section/home.dart';
-import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/model_file/model_file.dart';
-import 'package:read_me/model_user.dart/model_user.dart';
 import 'package:read_me/register_section/register_functions.dart';
 import 'package:read_me/widgets/widgets.dart';
 import '../admin/add_page.dart';
-import '../home_section/home_two.dart';
 import '../model/model_story.dart';
 import '../welcome.dart';
 import 'package:file_picker/file_picker.dart';
@@ -23,7 +18,7 @@ class ClassFunctions {
   static Future<void> login(
       String email, String password, BuildContext context) async {
     if (email == dotenv.env['EMAIL'] && password == dotenv.env['PASSWORD']) {
-      adminIsLog(true);
+      logedPerson('admin');
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => const AddPage(),
@@ -36,14 +31,13 @@ class ClassFunctions {
             email: email, password: password);
 
         if (auth.currentUser != null) {
-          RegisterFunction.getUserDetailes(user);
-          // Variables.userfullName = auth.currentUser!.email!;
-
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                builder: (context) => const FirstHome(),
-              ),
-              (route) => false);
+          await RegisterFunction.getUserDetailes(user.user!.uid);
+          ClassFunctions.logedPerson('user')
+              .whenComplete(() => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => const FirstHome(),
+                  ),
+                  (route) => false));
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -51,8 +45,6 @@ class ClassFunctions {
       }
     }
   }
-
-// register function
 
 // refreshing function ,feching in firebase and add to hive
   static Future<Box<Story>> getdata() async {
@@ -87,31 +79,49 @@ class ClassFunctions {
   }
 
 // adding and deleting favorite
-  static Future<void> addFavorite(Story favorite) async {
+  static Future<void> addFavorite(Story favorite, BuildContext context) async {
     final storyDb = await Hive.openBox<Story>('story');
+
     favorite.isFavorite = !favorite.isFavorite;
     storyDb.put(favorite.id, favorite);
+    if (favorite.isFavorite) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+          CustomSnackBar(contentText: 'successfully added in to favorite'));
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+          CustomSnackBar(contentText: 'successfully removed from favorite'));
+    }
   }
 
 // admin loging and logout
-  static Future<void> adminIsLog(
-    bool value,
+  static Future<void> logedPerson(
+    String value,
   ) async {
-    final adminDb = await Hive.openBox<bool>('admin');
+    final adminDb = await Hive.openBox<String>('admin');
     adminDb.put(0, value);
     Hive.close();
   }
 
   // Splash screen function checking user or admin ,is already logged in
   static Future<void> splash(BuildContext context) async {
-    await Future.delayed(const Duration(seconds: 3));
     final adminDb = await Hive.openBox('admin');
-    bool? value = adminDb.get(0);
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (context) => WelcomePage(
-        value: value,
-      ),
-    ));
+    RegisterFunction.getUserDetailesInValueNotifier();
+    String? value = adminDb.get(0);
+    // ignore: use_build_context_synchronously
+    ClassFunctions.getdata()
+        .whenComplete(() => Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) {
+                if (value == 'admin') {
+                  return const AddPage();
+                } else if (value == 'user') {
+                  return const FirstHome();
+                } else {
+                  return const WelcomePage();
+                }
+              }),
+            ));
     Hive.close();
   }
 

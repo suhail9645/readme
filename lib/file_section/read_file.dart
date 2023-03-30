@@ -1,10 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:read_me/model_file/model_file.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:read_me/widgets/widgets.dart';
-
 import '../home_section/variables.dart';
 
 class FileRead extends StatelessWidget {

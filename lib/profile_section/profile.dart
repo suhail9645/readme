@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:lottie/lottie.dart';
-import 'package:read_me/fuctions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
+import 'package:read_me/model_user.dart/model_user.dart';
 import 'package:read_me/premium_section/premium.dart';
 import 'package:read_me/profile_section/edit_profile.dart';
 import 'package:read_me/profile_section/favorite_list.dart';
 import 'package:read_me/profile_section/file_list.dart';
+import 'package:read_me/register_section/register_functions.dart';
 import 'package:read_me/settings/setting.dart';
-
-import '../file_section/read_file.dart';
-import '../model_file/model_file.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   int currentIndex = 0;
+  UserData? user;
+ 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +50,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         )),
                     IconButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) =>const SettingPage(),));
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SettingPage(
+                            user: user!,
+                          ),
+                        ));
                       },
                       icon: const Icon(
                         Icons.settings,
@@ -62,52 +64,61 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 20, 0, 10),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(Variables.userProfile ??
-                          'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          Variables.userfullName!,
-                          style: Variables.mStyle,
-                        ),
-                        Text(
-                          Variables.userName!,
-                          style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
-                        ),
-                        OutlinedButton(
-                            style: const ButtonStyle(
-                              side: MaterialStatePropertyAll(
-                                BorderSide(color: Colors.white),
+              ValueListenableBuilder(
+                  valueListenable: RegisterFunction.userDetailes,
+                  builder: (context, value, child) {
+                    user = value.last;
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 20, 0, 10),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 50,
+                            backgroundImage: NetworkImage(user!.imageUrl ??
+                                'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                               user!.fullName,
+                                style: Variables.mStyle,
                               ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const EditPage(),
-                              ));
-                            },
-                            child: Text(
-                              'Edit Profile',
-                              style: Variables.sStyle,
-                            ))
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                              Text(
+                               user!.userName,
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white),
+                              ),
+                              OutlinedButton(
+                                  style: const ButtonStyle(
+                                    side: MaterialStatePropertyAll(
+                                      BorderSide(color: Colors.white),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => EditPage(
+                                        user: value.last,
+                                      ),
+                                    ));
+                                  },
+                                  child: Text(
+                                    'Edit Profile',
+                                    style: Variables.sStyle,
+                                  ))
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
               Padding(
                 padding: const EdgeInsets.only(left: 14, top: 9, bottom: 20),
                 child: SizedBox(
@@ -127,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const PremiumPage(),
+                          builder: (context) =>const PremiumPage(),
                         ));
                       },
                       child: Row(
@@ -260,7 +271,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               )
             ],
-          ),
+          )
         ],
       ),
     );

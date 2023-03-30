@@ -17,14 +17,14 @@ class StoryAdapter extends TypeAdapter<Story> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Story(
+      isFavorite: fields[7] as bool,
+      firUid: fields[6] as String,
       storyname: fields[1] as String,
       authorname: fields[2] as String,
       story: fields[5] as String,
       category: fields[4] as String,
       image: fields[3] as String,
-      firUid: fields[6] as String,
       id: fields[0] as int?,
-       isFavorite: fields[7] as bool,
     );
   }
 

@@ -3,7 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
 
 import '../file_section/read_file.dart';
-import '../fuctions/functions.dart';
+import '../functions/functions.dart';
 import '../home_section/variables.dart';
 import '../model_file/model_file.dart';
 

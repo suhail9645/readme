@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:read_me/read_section/read.dart';
-import '../fuctions/functions.dart';
+import '../functions/functions.dart';
 import '../home_section/variables.dart';
 import '../model/model_story.dart';
 
@@ -39,7 +39,7 @@ class FavoriteList extends StatelessWidget {
                           trailing: IconButton(
                               onPressed: () {
                                 ClassFunctions.addFavorite(
-                                    favoriteStory[index]);
+                                    favoriteStory[index],context);
                               },
                               icon: const Icon(
                                 Icons.delete,

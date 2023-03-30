@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:read_me/fuctions/functions.dart';
+import 'package:read_me/functions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/model/model_story.dart';
 import 'package:read_me/read_section/read.dart';

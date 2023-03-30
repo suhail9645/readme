@@ -1,34 +1,39 @@
-
 import 'package:flutter/material.dart';
 import 'package:read_me/home_section/half_body.dart';
 import 'package:read_me/home_section/search.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/model/model_story.dart';
 import 'package:hive_flutter/adapters.dart';
-import '../../fuctions/functions.dart';
+import '../functions/functions.dart';
 import '../../read_section/read.dart';
 import '../profile_section/profile.dart';
 import '../widgets/widgets.dart';
 
 class HomePageTwo extends StatefulWidget {
- const HomePageTwo({super.key});
+  const HomePageTwo({super.key});
 
   @override
   State<HomePageTwo> createState() => _HomePageTwoState();
 }
+
 class _HomePageTwoState extends State<HomePageTwo> {
   bool isHome = true;
- TextEditingController search=TextEditingController();
+  TextEditingController search = TextEditingController();
   Box<Story>? story;
+  bool isRefresh = false;
+
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    double height = size.height;
+    double width = size.width;
     return Scaffold(
       backgroundColor: Variables.appBackground,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Variables.appBackground,
         title: SizedBox(
-          height: 45,
+          height: width / 7,
           child: TextFormField(
             controller: search,
             onTap: () {
@@ -74,9 +79,9 @@ class _HomePageTwoState extends State<HomePageTwo> {
               )
             : IconButton(
                 onPressed: () {
-                 search.clear();
-                 FocusScope.of(context).unfocus();
-                 Variables.searchvalue.value='';
+                  search.clear();
+                  FocusScope.of(context).unfocus();
+                  Variables.searchvalue.value = '';
                   setState(() {
                     isHome = true;
                   });
@@ -85,6 +90,8 @@ class _HomePageTwoState extends State<HomePageTwo> {
         actions: [
           GestureDetector(
             onTap: () {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(CustomSnackBar(contentText: 'Refreshing...'));
               ClassFunctions.getdata();
             },
             child: const Icon(Icons.refresh),
@@ -95,10 +102,10 @@ class _HomePageTwoState extends State<HomePageTwo> {
         ],
       ),
       body: isHome
-          ? SafeArea(   
+          ? SafeArea(
               child: FutureBuilder(
                   future: Hive.openBox<Story>('story'),
-                  builder: (context, snapshot) {               
+                  builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       final storyDb = Hive.box<Story>('story');
                       return ValueListenableBuilder(
@@ -138,8 +145,8 @@ class _HomePageTwoState extends State<HomePageTwo> {
                                                   const EdgeInsets.fromLTRB(
                                                       8, 0, 8, 14),
                                               child: SizedBox(
-                                                height: 130,
-                                                width: 140,
+                                                height: height / 6.5,
+                                                width: width / 2.7,
                                                 child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(10),
@@ -187,7 +194,7 @@ class _HomePageTwoState extends State<HomePageTwo> {
                               ),
                               GridView.count(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 crossAxisCount: 4,
                                 children: Variables.modelCategory,
                               ),

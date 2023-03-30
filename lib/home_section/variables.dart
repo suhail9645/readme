@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:read_me/fuctions/functions.dart';
 import 'package:read_me/home_section/category_model.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../model/model_story.dart';
 
 class Variables {
   static  List<Widget> modelCategory =const [
@@ -20,13 +17,8 @@ class Variables {
       GoogleFonts.poppins(fontSize: 18, color: Colors.white);
   static TextStyle sStyle =
       GoogleFonts.poppins(fontSize: 12, color: Colors.white);
-
-      static ValueNotifier<bool>onTap=ValueNotifier(true);
-      
+      static ValueNotifier<bool>onTap=ValueNotifier(true);   
    static const Color mColor=Color.fromARGB(255, 9, 60, 106);   
-   static String? userfullName;
-   static String? userName;
-   static String? userProfile;
    static ValueNotifier<int>bottemIndex=ValueNotifier(0);
    static const Color appBackground= Color.fromARGB(255, 46, 47, 55);
    static ValueNotifier <String>searchvalue=ValueNotifier('');

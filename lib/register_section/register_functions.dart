@@ -5,9 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:read_me/home_section/variables.dart';
-
-import '../home_section/home_two.dart';
+import 'package:read_me/functions/functions.dart';
+import 'package:read_me/home_section/home.dart';
+import 'package:read_me/model_user.dart/model_user.dart';
 import '../widgets/widgets.dart';
 
 class RegisterFunction {
@@ -16,6 +16,7 @@ class RegisterFunction {
     if (image != null) {
       return File(image.path);
     }
+    return null;
   }
 
   static Future<String?> register(
@@ -53,46 +54,76 @@ class RegisterFunction {
         }
         firestore.collection('user').doc(userCredential.user!.uid).set(
             {'userName': username, 'fullName': fullName, 'imageUrl': imageUrl});
-        getUserDetailes(userCredential);
-
+        getUserDetailes(userCredential.user!.uid);
+        ClassFunctions.logedPerson('user');
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-              builder: (context) => HomePageTwo(),
+              builder: (context) => const FirstHome(),
             ),
             (route) => false);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar(contentText: 'This Email already in use'));
         } else if (e.code == 'invalid-email') {
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context)
               .showSnackBar(CustomSnackBar(contentText: 'Invalid email'));
+        } else if (e.code == 'weak-password') {
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+              CustomSnackBar(contentText: 'Password should contain six words'));
         } else {
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context)
               .showSnackBar(CustomSnackBar(contentText: 'something wrong'));
         }
       }
+      return null;
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
           CustomSnackBar(contentText: 'This Username already in use'));
       return oldUser;
     }
   }
 
-  static Future<void> getUserDetailes(UserCredential userCredential) async {
+  static Future<void> getUserDetailes(String uid) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     final QuerySnapshot userDatas = await firestore.collection('user').get();
     for (var element in userDatas.docs) {
-      if (element.id == userCredential.user!.uid) {
-        final userDb = await Hive.openBox<String>('userDetailes');
-        userDb.add(element.get('fullName'));
-        userDb.add(element.get('userName'));
-        userDb.add(element.get('imageUrl'));
-        Variables.userName=element.get('userName');
-        Variables.userfullName=element.get('fullName');
-        Variables.userProfile=element.get('imageUrl');
+      if (element.id == uid) {
+        final userDb = await Hive.openBox<UserData>('userDetailes');
+
+        UserData user = UserData(
+            uid: uid,
+            userName: element.get('userName'),
+            fullName: element.get('fullName'),
+            imageUrl: element.get('imageUrl'));
+
+        await userDb.add(user);
+
+        await getUserDetailesInValueNotifier();
       }
     }
+  }
+
+  static ValueNotifier<List<UserData>> userDetailes =
+      userDetailes = ValueNotifier([]);
+  static Future<void> getUserDetailesInValueNotifier() async {
+    final userDb = await Hive.openBox<UserData>('userDetailes');
+
+    userDetailes.value.addAll(userDb.values);
+    userDetailes.notifyListeners();
+  }
+
+  static String? validateFunction(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    return null;
   }
 }

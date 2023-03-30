@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:read_me/admin/add_functions.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/model/model_story.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -39,7 +40,7 @@ class _AddPageState extends State<AddPage> {
         title:Text('Admin Page',style: Variables.mStyle,),
         actions: [
           IconButton(onPressed: () {
-           CustomAwesome(context: context,content: 'Admin Page',).show();
+           CustomAwesome(context: context,content: 'Admin Page', value: 'admin',).show();
           }, icon:const Icon(Icons.logout))
         ],
       ),
@@ -133,247 +134,35 @@ class _AddPageState extends State<AddPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Romance'),
-                    leading: Radio(
-                      value: 'Romance',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('History'),
-                    leading: Radio(
-                      value: 'History',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Fitness'),
-                    leading: Radio(
-                      value: 'Fitness',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
+                CustomRadio(context: context, content: 'Romance'),  
+                CustomRadio(context: context, content: 'History'),
+                 CustomRadio(context: context, content: 'Fitness'),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Horror'),
-                    leading: Radio(
-                      value: 'Horror',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    minLeadingWidth: 10,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Other'),
-                    leading: Radio(
-                      value: 'Other',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Thriller'),
-                    leading: Radio(
-                      value: 'Thriller',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
+                 CustomRadio(context: context, content: 'Horror'),
+               CustomRadio(context: context, content: 'Other'),
+                CustomRadio(context: context, content: 'Thriller'),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text(
-                      'Motivation',
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    leading: Radio(
-                      value: 'Motivation',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text(
-                      'Adventure',
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    leading: Radio(
-                      value: 'Adventure',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Top 10'),
-                    leading: Radio(
-                      value: 'Top 10',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
+                 CustomRadio(context: context, content: 'Motivation'),
+                CustomRadio(context: context, content: 'Adventure'),
+                 CustomRadio(context: context, content: 'Top 10'),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Trending now'),
-                    leading: Radio(
-                      value: 'Trending now',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Newly published'),
-                    leading: Radio(
-                      value: 'Newly published',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ListTile(
-                    horizontalTitleGap: 1,
-                    contentPadding: const EdgeInsets.all(0),
-                    title: const Text('Best seller'),
-                    leading: Radio(
-                      value: 'Best seller',
-                      groupValue: grpval,
-                      onChanged: (value) {
-                        setState(() {
-                          // actvalue=value;
-                          grpval = value!;
-                        });
-                      },
-                    ),
-                  ),
-                ),
+                CustomRadio(context: context, content: 'Trending now'),
+                 CustomRadio(context: context, content: 'Newly published'),
+                CustomRadio(context: context, content: 'Best seller'),
               ],
             ),
-
-            //    TextFormField(),
             Padding(
               padding: const EdgeInsets.all(10),
               child: ElevatedButton(
@@ -449,6 +238,7 @@ class _AddPageState extends State<AddPage> {
           path1 = result.files.first.path!;
         });
       } else {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context)
             .showSnackBar(CustomSnackBar(contentText: 'Please add a pdf file'));
       }
@@ -474,7 +264,7 @@ class _AddPageState extends State<AddPage> {
         storyname: _storyname.text,
         authorname: _authorname.text,
         story: fileurl!,
-        category: grpval,
+        category: AddFunctions.groupValue.value,
         firUid: 'j', isFavorite: false,);
     story.add(storydata.toJson()).whenComplete(() => ScaffoldMessenger(
         child: CustomSnackBar(contentText: 'successfully added')));

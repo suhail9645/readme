@@ -51,7 +51,9 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   lottie: ^2.3.0
   rflutter_alert: ^2.0.4
+  share_plus: ^6.3.1
   syncfusion_flutter_pdfviewer: ^20.4.53
+  url_launcher: ^6.1.10
 
 dev_dependencies:
 

@@ -8,6 +8,7 @@ import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/premium_section/premium.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+
 class FirstHome extends StatefulWidget {
   const FirstHome({super.key});
 
@@ -16,11 +17,11 @@ class FirstHome extends StatefulWidget {
 }
 
 class _FirstHomeState extends State<FirstHome> {
-  final List<Widget> pages = [
+  final List<Widget> pages = const [
     HomePageTwo(),
-    const FilePage(),
-    const PremiumPage(),
-    const FavoritePage()
+    FilePage(),
+    PremiumPage(),
+    FavoritePage()
   ];
   late StreamSubscription subscription;
   var isDeviceConnected = false;
@@ -37,7 +38,6 @@ class _FirstHomeState extends State<FirstHome> {
       isDeviceConnected = await InternetConnectionChecker().hasConnection;
       if (!isDeviceConnected) {
         showDialogBox();
-       
       }
     });
   }
@@ -62,29 +62,37 @@ class _FirstHomeState extends State<FirstHome> {
 
   void showDialogBox() {
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) =>AlertDialog(
-        backgroundColor: Variables.appBackground,
-        actionsAlignment: MainAxisAlignment.center,
-        title: Lottie.asset('assets/animations/no_internet.json',height: 100,width: 100),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('No Internet',style: Variables.mStyle,),
-          ],
-        ),
-        actions: [
-          ElevatedButton(
-            style:const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Variables.mColor)),
-            onPressed: () async{
-             isDeviceConnected=await InternetConnectionChecker().hasConnection;
-            if(isDeviceConnected){
-              Navigator.pop(context);
-            }
-          }, child:const Text('Try again'))
-        ],
-      )
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: Variables.appBackground,
+              actionsAlignment: MainAxisAlignment.center,
+              title: Lottie.asset('assets/animations/no_internet.json',
+                  height: 100, width: 100),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'No Internet',
+                    style: Variables.mStyle,
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Variables.mColor)),
+                    onPressed: () async {
+                      isDeviceConnected =
+                          await InternetConnectionChecker().hasConnection;
+                      if (isDeviceConnected) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Try again'))
+              ],
+            ));
   }
 }

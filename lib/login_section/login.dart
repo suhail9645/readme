@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:read_me/fuctions/functions.dart';
+import 'package:read_me/functions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:read_me/register_section/register.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   bool load = false;
   late StreamSubscription subscription;
   var isDeviceConnected = false;
- 
+
   @override
   void initState() {
     getConnectivity();
@@ -50,42 +50,48 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    double height = size.height;
+    double imgHeight = height / 3;
     return Scaffold(
         body: Stack(
       children: [
-        Image.asset(
-          'assets/download_1.jfif',
-          width: double.infinity,
-          height: 240,
-          fit: BoxFit.cover,
+        SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/download_1.jfif',
+                width: double.infinity,
+                height: imgHeight,
+                fit: BoxFit.cover,
+              ),
+              Image.asset(
+                'assets/download_2.jfif',
+                width: double.infinity,
+                height: imgHeight,
+                fit: BoxFit.cover,
+              ),
+              Image.asset(
+                'assets/download_3.jfif',
+                width: double.infinity,
+                height: imgHeight,
+                fit: BoxFit.cover,
+              ),
+            ],
+          ),
         ),
-        Padding(
-            padding: const EdgeInsets.only(top: 240),
-            child: Image.asset(
-              'assets/download_2.jfif',
-              width: double.infinity,
-              height: 240,
-              fit: BoxFit.cover,
-            )),
-        Padding(
-            padding: const EdgeInsets.only(top: 475),
-            child: Image.asset(
-              'assets/download_3.jfif',
-              width: double.infinity,
-              height: 240,
-              fit: BoxFit.cover,
-            )),
         Container(
           height: double.infinity,
           width: double.infinity,
-          color: const Color.fromARGB(197, 13, 13, 15),
+          color: const Color.fromARGB(206, 13, 13, 15),
         ),
         Form(
           key: formKey,
           child: ListView(
             children: [
-              const SizedBox(
-                height: 130,
+              SizedBox(
+                height: height / 4,
               ),
               Center(
                 child: Text(
@@ -273,6 +279,7 @@ class _LoginPageState extends State<LoginPage> {
                       isDeviceConnected =
                           await InternetConnectionChecker().hasConnection;
                       if (isDeviceConnected) {
+                        // ignore: use_build_context_synchronously
                         Navigator.pop(context);
                       }
                     },

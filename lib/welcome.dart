@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:read_me/admin/add_page.dart';
-
-import 'package:read_me/register_section/register.dart';
-
 import 'login_section/login.dart';
 
 class WelcomePage extends StatelessWidget {
-  const WelcomePage({super.key, required this.value});
-  final bool? value;
+  const WelcomePage({
+    super.key,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,11 +25,9 @@ class WelcomePage extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 70,
-              ),
               Text(
                 'WELCOME!',
                 style: GoogleFonts.inriaSerif(
@@ -79,11 +75,7 @@ class WelcomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context)
                       .pushReplacement(MaterialPageRoute(builder: (context) {
-                    if (value == null || value == false) {
-                      return const LoginPage();
-                    } else {
-                      return const AddPage();
-                    }
+                    return const LoginPage();
                   }));
                 },
                 child: Text(

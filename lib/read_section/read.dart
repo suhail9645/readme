@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:read_me/fuctions/functions.dart';
+import 'package:read_me/functions/functions.dart';
 import 'package:read_me/home_section/variables.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -15,33 +15,22 @@ class ReadPage extends StatefulWidget {
 
 class _ReadPageState extends State<ReadPage> {
   @override
-  bool dark = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Variables.mColor,
+        title: Text(widget.story.storyname,style: Variables.mStyle,overflow: TextOverflow.ellipsis,),
         actions: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                dark = !dark;
-              });
-            },
-            child: Icon(
-              dark? Icons.dark_mode : Icons.dark_mode_outlined,
-              color: Colors.black,
-              size: 30,
-            ),
-          ),
+         
           const SizedBox(
             width: 20,
           ),
           GestureDetector(
             onTap: () {
-              // widget.isFavorite
-              //     ? ClassFunctions.deleteFavorite(widget.story.id!)
-                   ClassFunctions.addFavorite(widget.story);
+            
+                   ClassFunctions.addFavorite(widget.story,context);
               setState(() {});
             },
             child: Icon(

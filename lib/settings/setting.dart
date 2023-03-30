@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:read_me/home_section/variables.dart';
-class SettingPage extends StatelessWidget {
-  const SettingPage({super.key});
+import 'package:read_me/model_user.dart/model_user.dart';
+import 'package:read_me/profile_section/edit_profile.dart';
+import 'package:read_me/settings/terms_conditions.dart';
+import 'package:read_me/settings/widgets.dart';
+import 'package:read_me/widgets/widgets.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+class SettingPage extends StatelessWidget {
+   SettingPage({super.key, required this.user});
+  final UserData user;
+  final Uri mail=Uri.parse('mailto:${dotenv.env['GMAIL']}');
+  
   @override
   Widget build(BuildContext context) {
+   Size  size = MediaQuery.of(context).size;
+   double height = size.height;
     return Scaffold(
       backgroundColor: Variables.appBackground,
       appBar: AppBar(
@@ -22,7 +35,7 @@ class SettingPage extends StatelessWidget {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 200,
+                  height: height/3.5,
                   color: Variables.mColor,
                 ),
                 Padding(
@@ -39,11 +52,11 @@ class SettingPage extends StatelessWidget {
                             leading: CircleAvatar(
                               backgroundColor: Colors.transparent,
                               radius: 30,
-                              backgroundImage:
-                                  NetworkImage(Variables.userProfile!),
+                              backgroundImage: NetworkImage(user.imageUrl ??
+                                  'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
                             ),
                             title: Text(
-                              Variables.userfullName!,
+                              user.fullName,
                               style: Variables.mStyle,
                             ),
                           ),
@@ -53,7 +66,7 @@ class SettingPage extends StatelessWidget {
                           Row(
                             children: const [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Account settings',
                                   style: TextStyle(
@@ -62,57 +75,85 @@ class SettingPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const ListTile(
-                            title: Text(
+                          ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditPage(user: user),
+                                  ));
+                            },
+                            title: const Text(
                               'Edit profile',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
-                            trailing: Icon(
+                            trailing: const Icon(
                               Icons.arrow_forward_ios_rounded,
                               color: Colors.white,
                             ),
                           ),
-                          const ListTile(
-                            title: Text(
+                           ListTile(
+                            onTap: ()async {
+                            await launchUrl(mail);
+                            },
+                            title:const Text(
                               'Contact us',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
-                            trailing: Icon(
+                            trailing:const Icon(
                               Icons.arrow_forward_ios_rounded,
                               color: Colors.white,
                             ),
                           ),
-                          const ListTile(
-                            title: Text(
+                          ListTile(
+                            onTap: () {
+                              Share.share('com.example.read_me');
+                            },
+                            title: const Text(
                               'Invite Friends',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
-                            trailing: Icon(
+                            trailing: const Icon(
                               Icons.arrow_forward_ios_rounded,
                               color: Colors.white,
                             ),
                           ),
-                          const ListTile(
-                            title: Text(
+                          ListTile(
+                            onTap: () {
+                              showModalBottomSheet(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (context) =>
+                                    CustomBottomSheetForAboutus(),
+                              );
+                            },
+                            title: const Text(
                               'About us',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
-                            trailing: Icon(
+                            trailing: const Icon(
                               Icons.arrow_forward_ios_rounded,
                               color: Colors.white,
                             ),
                           ),
-                          const ListTile(
-                            title: Text(
+                          ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const TermsPage(),
+                                  ));
+                            },
+                            title: const Text(
                               'Terms and Conditions',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white),
                             ),
-                            trailing: Icon(
+                            trailing: const Icon(
                               Icons.arrow_forward_ios_rounded,
                               color: Colors.white,
                             ),
@@ -130,7 +171,11 @@ class SettingPage extends StatelessWidget {
             ElevatedButton.icon(
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Variables.mColor)),
-              onPressed: () {},
+              onPressed: () {
+                CustomAwesome(
+                        context: context, content: 'README', value: 'logout')
+                    .show();
+              },
               label: Text(
                 'Logout',
                 style: Variables.mStyle,
