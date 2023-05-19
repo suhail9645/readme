@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   awesome_dialog: ^3.0.2
+  bloc: ^8.1.1
   cloud_firestore: ^4.4.3
   connection_notifier: ^1.0.1
   connectivity_plus: ^3.0.3
@@ -40,6 +41,7 @@ dependencies:
   firebase_storage: ^11.0.14
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.2
   flutter_dotenv: ^5.0.2
   flutter_easyloading: ^3.0.5
   
