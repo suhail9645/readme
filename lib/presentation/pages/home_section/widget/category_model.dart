@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:read_me/main.dart';
+import 'package:read_me/presentation/pages/home_section/bloc/home_bloc.dart';
 import 'package:read_me/presentation/pages/home_section/variables.dart';
 
 class CategoryModel extends StatelessWidget {
-  const CategoryModel({super.key, required this.image, required this.name,});
+  const CategoryModel({super.key, required this.image, required this.name,required this.homePageState});
   final String image;
   final String name;
-  
+  final HomePageState homePageState;
 
   // final Function route;
   @override
@@ -14,8 +16,8 @@ class CategoryModel extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-           Variables.onTap.value=false;
-            Variables.categoryName.value=name;
+            homeBloc.add(CategoryItemClickedEvent(allStories:homePageState.allStories , categoryName: name,));
+          
           },
           child: CircleAvatar(
             radius: 30,

@@ -17,12 +17,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   if(isAdmin){
     emit(NavigateIntoAdminPageState());
   }else{
-  bool isUser=await  FirebaseUserOperationsimp().checkUser(event.email, event.password);
-    if(isUser){
-      emit(NavigateIntoHomePageState());
-    }else{
-      emit(NavigateIntoHomePageState());
-    }
+  final isUser=await  FirebaseUserOperationsimp().checkUser(event.email, event.password);
+   isUser.fold((left) {
+    emit(LoginError(error: left.error));
+   }, (right) {
+    emit(NavigateIntoHomePageState());
+   });
   }
   }
 }

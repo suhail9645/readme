@@ -7,7 +7,10 @@ class LoginInitial extends LoginState {}
 
 class LoginButtonClickedState extends LoginState {}
 
-class LoginError extends LoginState {}
+class LoginError extends LoginState {
+  final String error;
+  LoginError({required this.error});
+}
 
 class NavigateIntoRegisterState extends LoginState {}
 

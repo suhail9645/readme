@@ -198,13 +198,16 @@ class _LoginPageState extends State<LoginPage> {
                 child: BlocConsumer<LoginBloc, LoginState>(
                   bloc: loginBloc,
                   listener: (context, state) {
-                   if(state is NavigateIntoHomePageState){
-                     Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const FirstHome(),
-                  ),
-                  (route) => false);
-                   }
+                    if (state is NavigateIntoHomePageState) {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => const FirstHome(),
+                          ),
+                          (route) => false);
+                    } else if (state is LoginError) {
+                      ScaffoldMessenger.of(context).showSnackBar(CustomSnackBar(
+                          contentText: state.error));
+                    }
                   },
                   builder: (context, state) {
                     return ElevatedButton(
@@ -216,21 +219,22 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               load = true;
                             });
-                            await ClassFunctions.login(
-                              _email.text,
-                              _password.text,
-                              context,
-                            );
-                            loginBloc.add(LoginButtonClickedEvent(email: _email.text, password: _password.text));
+                            // await ClassFunctions.login(
+                            //   _email.text,
+                            //   _password.text,
+                            //   context,
+                            // );
+                            loginBloc.add(LoginButtonClickedEvent(
+                                email: _email.text, password: _password.text));
                             setState(() {
                               load = false;
                             });
                           }
                         },
                         child: load
-                            ? Row(
+                            ? const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Text('Please wait'),
                                   SizedBox(
                                     width: 15,

@@ -1,10 +1,53 @@
-import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../../data/functions/functions.dart';
-import '../../../domain/model/model_story.dart';
-import '../read_section/read.dart';
-import 'variables.dart';
+import 'package:flutter/material.dart';
+import '../../../../domain/model/model_story.dart';
+import '../../../../domain/repository/other.dart';
+import '../../read_section/read.dart';
+import '../variables.dart';
+
+class HalfBody extends StatelessWidget {
+  const HalfBody({super.key, required this.storyValues});
+   final List<Story> storyValues;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.only(left:8),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Image.asset('assets/best.png',height: 30,),
+                const SizedBox(
+                  width: 6,
+                ),
+               Text('Best seller',style: Variables.mStyle),
+              ],
+            ),
+            ScrollList( value: storyValues, category: 'Best seller',),
+            Row(
+              children: [Image.asset('assets/top.png',height: 30,),
+                const SizedBox(
+                  width: 3,
+                ),
+                  Text('Top Ten',style: Variables.mStyle),
+              ],
+            ),
+              ScrollList( value: storyValues, category: 'Top 10',),
+                 Row(
+              children: [Image.asset('assets/new.png',height: 30,),
+                const SizedBox(
+                  width: 3,
+                ),
+                  Text('Newly published',style: Variables.mStyle),
+              ],
+            ),
+              ScrollList( value: storyValues, category: 'Newly published',),
+          
+          ],
+        ),
+      );
+  }
+}
 
 class ScrollList extends StatelessWidget {
   const ScrollList({
@@ -13,11 +56,11 @@ class ScrollList extends StatelessWidget {
     required this.value, required this.category,
   });
   
-  final Box<Story> value;
+  final List<Story> value;
   final String category;
   @override
   Widget build(BuildContext context) {
-    List<Story> categoryStory=ClassFunctions.sepratingStory(value,category);
+    List<Story> categoryStory=OtherAllFunctions.sepratingStory(value,category);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(

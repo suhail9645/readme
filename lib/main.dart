@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:read_me/presentation/pages/home_section/bloc/home_bloc.dart';
 import 'package:read_me/presentation/pages/login_section/bloc/login_bloc.dart';
 import 'package:read_me/presentation/pages/splash_section/bloc/splash_bloc.dart';
 import 'package:read_me/presentation/pages/splash_section/splash.dart';
@@ -32,13 +33,18 @@ void main() async {
 }
  SplashBloc splashBloc=SplashBloc();
  LoginBloc loginBloc=LoginBloc();
+ HomeBloc homeBloc=HomeBloc()..add(HomePageInitalEvent());
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => splashBloc,
+    return MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (context) => splashBloc,),
+      
+      BlocProvider(create: (context) => loginBloc,)
+    ],
        
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

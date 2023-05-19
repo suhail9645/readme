@@ -8,15 +8,16 @@ import '../../domain/model_user.dart/model_user.dart';
 class HiveOperationsImp extends UserHiveOperations {
   @override
   Future<String?> getUserDetailes() async {
-    final userDb = await Hive.openBox(userHive);
+    final userDb = await Hive.openBox<String>(userHive);
     String? value = userDb.get(0);
+    userDb.close();
     return value;
   }
 
   @override
   Future<void> addUserDatailes(String value) async {
-    final adminDb = await Hive.openBox<String>(userHive);
-    adminDb.put(0, value);
+    final userDb = await Hive.openBox<String>(userHive);
+    userDb.put(0, value);
   }
 }
 

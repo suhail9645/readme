@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../domain/model_user.dart/model_user.dart';
 import '../home_section/variables.dart';
 import '../premium_section/premium.dart';

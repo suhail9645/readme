@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:read_me/presentation/pages/home_section/variables.dart';
-
 import '../favorite_section/favorite.dart';
 import '../file_section/file.dart';
 import '../premium_section/premium.dart';
@@ -18,11 +17,11 @@ class FirstHome extends StatefulWidget {
 }
 
 class _FirstHomeState extends State<FirstHome> {
-  final List<Widget> pages = const [
+  final List<Widget> pages =  [
     HomePageTwo(),
-    FilePage(),
-    PremiumPage(),
-    FavoritePage()
+   const FilePage(),
+  const  PremiumPage(),
+  const  FavoritePage()
   ];
   late StreamSubscription subscription;
   var isDeviceConnected = false;

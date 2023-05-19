@@ -3,14 +3,14 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:lottie/lottie.dart';
 import 'package:read_me/presentation/pages/home_section/variables.dart';
 
-import '../../../domain/model/model_story.dart';
-import '../read_section/read.dart';
+import '../../../../domain/model/model_story.dart';
+import '../../read_section/read.dart';
 class SearchPage extends StatelessWidget {
   const SearchPage({
     super.key,
     required this.story,
   });
-  final Box<Story> story;
+  final List<Story> story;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class SearchPage extends StatelessWidget {
       valueListenable: Variables.searchvalue,
       builder: (context, value, child) {
         List<Story> result = [];
-        for (var element in story.values) {
+        for (var element in story) {
           if (element.storyname.toLowerCase().contains(value.toLowerCase())) {
             result.add(element);
           }
