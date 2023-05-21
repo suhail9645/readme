@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:read_me/data/repository/check_admin.dart';
@@ -13,6 +12,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   FutureOr<void> loginButtonClickedEvent(LoginButtonClickedEvent event, Emitter<LoginState> emit)async {
+    emit(LoginloadingState());
   bool isAdmin= CheckIfAdminImp().checkIfAdmin(event.email, event.password);
   if(isAdmin){
     emit(NavigateIntoAdminPageState());

@@ -64,8 +64,8 @@ class SettingPage extends StatelessWidget {
                           const Divider(
                             color: Colors.white,
                           ),
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text(

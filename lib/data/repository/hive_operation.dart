@@ -1,11 +1,12 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:read_me/core/strings.dart';
 import 'package:read_me/domain/model/model_story.dart';
 import 'package:read_me/domain/model_file/model_file.dart';
 import 'package:read_me/domain/repository/hive.dart';
-
 import '../../domain/model_user.dart/model_user.dart';
 import '../../presentation/pages/widgets/widgets.dart';
 
@@ -29,7 +30,7 @@ class HiveUserProfileImp extends UserProfileHive {
   @override
   Future<void> addProfileIntoHIve(
       QueryDocumentSnapshot<Object?> userData) async {
-    final userDb = await Hive.openBox<UserData>('userDetailes');
+    final userDb = await Hive.openBox<UserData>(userProfileHive);
 
     UserData user = UserData(
         uid: userData.id,
@@ -42,7 +43,7 @@ class HiveUserProfileImp extends UserProfileHive {
 
   @override
   Future<UserData> getCurrentUserProfile() async {
-    final userDb = await Hive.openBox<UserData>('userDetailes');
+    final userDb = await Hive.openBox<UserData>(userProfileHive);
     return userDb.values.last;
   }
 }
@@ -65,7 +66,7 @@ class FavouriteHiveImp extends FavouriteHive {
   @override
   Future<void> addAndRemoveFavourite(
       Story favorite, BuildContext context) async {
-    final storyDb = await Hive.openBox<Story>('story');
+    final storyDb = await Hive.openBox<Story>(storyHive);
 
     favorite.isFavorite = !favorite.isFavorite;
     storyDb.put(favorite.id, favorite);
@@ -84,17 +85,44 @@ class FavouriteHiveImp extends FavouriteHive {
 class GetAllFilesImp extends FileHive {
   @override
   Future<List<FileCollection>> getAllFiles() async {
-    final fileDb = await Hive.openBox<FileCollection>('files');
+    final fileDb = await Hive.openBox<FileCollection>(fileHive);
     return fileDb.values.toList();
   }
 
   @override
   Future<void> deleteFileFromHive(int index, BuildContext context) async {
-    final fileDb = await Hive.openBox<FileCollection>('files');
+    final fileDb = await Hive.openBox<FileCollection>(fileHive);
     fileDb.deleteAt(index);
 
     // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context)
         .showSnackBar(CustomSnackBar(contentText: 'file removed from readme'));
+  }
+
+  @override
+  Future<void> addFileIntoHive() async {
+    final fileDb = await Hive.openBox<FileCollection>(fileHive);
+    final result = await FilePicker.platform.pickFiles(
+        allowedExtensions: ['pdf'],
+        allowMultiple: false,
+        type: FileType.custom);
+    if (result != null) {
+      String extension = result.paths.first!.split('.').last;
+      String name = result.names.first!;
+      File pdf = File(result.files.first.path!);
+      String date = DateTime.now().toString().split('.').first;
+      if (extension.toLowerCase() == 'pdf') {
+        final file = FileCollection(name, pdf.path, date);
+        file.id = await fileDb.add(file);
+        fileDb.put(file.id, file);
+        //  Hive.close();
+      }
+    }
+  }
+  
+  @override
+  Future<void> deleteFile(int index)async {
+   final fileDb = await Hive.openBox<FileCollection>(fileHive);
+    fileDb.deleteAt(index);
   }
 }

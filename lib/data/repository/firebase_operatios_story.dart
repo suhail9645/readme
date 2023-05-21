@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:read_me/domain/model/model_story.dart';
 
+import '../../core/strings.dart';
 import '../../domain/repository/firebase_firestore.dart';
 
 class FirebaseStoryOperationsimp extends FirebaseStoryOperations {
   @override
   Future<Box<Story>> getAllStory() async {
-    final storyDb = await Hive.openBox<Story>('story');
+    final storyDb = await Hive.openBox<Story>(storyHive);
     final Query query = FirebaseFirestore.instance.collection('story');
     final QuerySnapshot querySnapshot = await query.get();
 

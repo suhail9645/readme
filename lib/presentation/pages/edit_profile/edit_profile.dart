@@ -8,6 +8,7 @@ import 'package:read_me/presentation/pages/profile_section/profile_functions.dar
 import '../../../domain/model_user.dart/model_user.dart';
 import '../home_section/variables.dart';
 import '../profile_section/custom.dart';
+import '../profile_section/profile.dart';
 import '../widgets/widgets.dart';
 import 'bloc/edit_profile_bloc.dart';
 
@@ -58,6 +59,7 @@ class _EditPageState extends State<EditPage> {
                       builder: (context, state) {
                         if (state is EditProfileImageState) {
                           userImage = state.updatedImage;
+                          extension = userImage!.path.split('.').last;
                         }
                         return GestureDetector(
                           onTap: () {
@@ -213,7 +215,17 @@ class _EditPageState extends State<EditPage> {
                         ),
                       ],
                     ),
-                    BlocBuilder<EditProfileBloc, EditProfileState>(
+                    BlocConsumer<EditProfileBloc, EditProfileState>(
+                      listener: (context, state) {
+                        if (state is AfterUpdateProfileState) {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => const ProfilePage(),
+                            ),
+                            (route) => route.isFirst,
+                          );
+                        }
+                      },
                       bloc: editProfileBloc,
                       builder: (context, state) {
                         return Padding(
@@ -224,27 +236,18 @@ class _EditPageState extends State<EditPage> {
                                       Variables.mColor)),
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  if (widget.user.fullName != _name.text ||
-                                      widget.user.userName != _username.text ||
-                                      userImage != null) {
-                                    setState(() {
-                                      isButtonClicked = true;
-                                    });
-                                    await ProfileFunction.updateUser(
-                                        _username.text,
-                                        _name.text,
-                                        userImage,
-                                        extension,
-                                        context,
-                                        widget.user);
-                                    setState(() {
-                                      isButtonClicked = false;
-                                    });
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        CustomSnackBar(
-                                            contentText: 'No changes occured'));
-                                  }
+                                  UserData userData = UserData(
+                                      uid: widget.user.uid,
+                                      userName: _username.text,
+                                      fullName: _name.text,
+                                      imageUrl: userImage?.path);
+                                  editProfileBloc.add(UpdateUserDetailesEvent(
+                                      userData,
+                                      context,
+                                      extension ?? '',
+                                      widget.user.userName));
+
+                                 
                                 }
                               },
                               child: isButtonClicked

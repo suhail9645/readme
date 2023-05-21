@@ -6,6 +6,7 @@ abstract class LoginState {}
 class LoginInitial extends LoginState {}
 
 class LoginButtonClickedState extends LoginState {}
+class LoginloadingState extends LoginState{}
 
 class LoginError extends LoginState {
   final String error;

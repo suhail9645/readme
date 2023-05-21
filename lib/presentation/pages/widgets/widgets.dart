@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:read_me/data/repository/hive_operation.dart';
 import 'package:read_me/main.dart';
 import 'package:read_me/presentation/pages/home_section/bloc/home_bloc.dart';
 import 'package:read_me/presentation/pages/main_page/bloc/main_page_bloc.dart';
@@ -55,7 +56,8 @@ class CustomAwesome extends AwesomeDialog {
                   builder: (context) => const LoginPage(),
                 ),
                 (route) => false);
-            ClassFunctions.logedPerson(value);
+            // ClassFunctions.logedPerson(value);
+            HiveOperationsImp().addUserDatailes(value);
           },
         );
 }

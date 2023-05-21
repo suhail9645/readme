@@ -9,6 +9,6 @@ abstract class FirebaseStoryOperations{
 }
 abstract class FireStoreUserOperations{
   Future<void>getAllUserDetails(String uid);
-  Future<void>updateUserProfile(UserData userData,BuildContext context,String extension);
+  Future<void>updateUserProfile(UserData user,BuildContext context,String extension,String oldUserName);
 }
 

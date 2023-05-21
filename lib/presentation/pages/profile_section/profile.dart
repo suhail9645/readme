@@ -5,7 +5,6 @@ import '../../../domain/model_user.dart/model_user.dart';
 import '../edit_profile/edit_profile.dart';
 import '../home_section/variables.dart';
 import '../premium_section/premium.dart';
-import '../register_section/register_functions.dart';
 import '../settings/setting.dart';
 import 'bloc/profile_bloc.dart';
 import 'favorite_list.dart';

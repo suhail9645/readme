@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:read_me/main.dart';
+import 'package:read_me/presentation/pages/admin/add_page.dart';
 import '../home_section/variables.dart';
 import '../main_page/home.dart';
 import '../register_section/register.dart';
@@ -165,6 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
                     child: TextFormField(
+                      obscureText: true,
                       controller: _password,
                       decoration: const InputDecoration(
                           hintText: 'eg:123456',
@@ -205,10 +207,14 @@ class _LoginPageState extends State<LoginPage> {
                           (route) => false);
                     } else if (state is LoginError) {
                       ScaffoldMessenger.of(context).showSnackBar(CustomSnackBar(
-                          contentText: state.error));
+                          contentText: 'Wrong Password or Email'));
+                    }
+                    else if (state is NavigateIntoAdminPageState) {
+                     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>const AddPage(),), (route) => false);
                     }
                   },
                   builder: (context, state) {
+                    
                     return ElevatedButton(
                         style: const ButtonStyle(
                             backgroundColor:
@@ -218,11 +224,7 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               load = true;
                             });
-                            // await ClassFunctions.login(
-                            //   _email.text,
-                            //   _password.text,
-                            //   context,
-                            // );
+                            
                             loginBloc.add(LoginButtonClickedEvent(
                                 email: _email.text, password: _password.text));
                             setState(() {
@@ -230,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                             });
                           }
                         },
-                        child: load
+                        child: state is LoginloadingState?
                             ? const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

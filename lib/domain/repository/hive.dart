@@ -23,5 +23,7 @@ abstract class FavouriteHive{
 abstract class FileHive{
   Future<List<FileCollection>>getAllFiles();
   Future<void>deleteFileFromHive(int index,BuildContext context);
+  Future<void>addFileIntoHive();
+  Future<void>deleteFile(int index);
 }
 

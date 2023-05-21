@@ -1,15 +1,16 @@
 import 'dart:io';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
+import 'package:read_me/main.dart';
 import '../../../domain/model/model_story.dart';
 import '../home_section/variables.dart';
 import '../widgets/widgets.dart';
 import 'add_functions.dart';
-
+import 'bloc/admin_bloc.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -39,11 +40,20 @@ class _AddPageState extends State<AddPage> {
         backgroundColor: Variables.mColor,
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title:Text('Admin Page',style: Variables.mStyle,),
+        title: Text(
+          'Admin Page',
+          style: Variables.mStyle,
+        ),
         actions: [
-          IconButton(onPressed: () {
-           CustomAwesome(context: context,content: 'Admin Page', value: 'admin',).show();
-          }, icon:const Icon(Icons.logout))
+          IconButton(
+              onPressed: () {
+                CustomAwesome(
+                  context: context,
+                  content: 'Admin Page',
+                  value: 'logout',
+                ).show();
+              },
+              icon: const Icon(Icons.logout))
         ],
       ),
       body: SafeArea(
@@ -56,25 +66,34 @@ class _AddPageState extends State<AddPage> {
               child: Container(
                 height: 100,
                 decoration: BoxDecoration(border: Border.all()),
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isAdd = false;
-                    });
-                    addImage();
+                child: BlocBuilder<ImageAddBloc, ImageAddState>(
+                  bloc:imageAddBloc ,
+                  builder: (context, state) {
+                    image=state.storyImage;
+                    isAdd=image!=null?false:true;
+                    extensionImage = image?.path.split('.').last;
+                    return GestureDetector(
+                      onTap: () {
+                        // setState(() {
+                        //   isAdd = false;
+                        // });
+                        // addImage();
+                        imageAddBloc.add(ImageAddEvent());
+                      },
+                      child: ClipRRect(
+                        child: image != null
+                            ? Image.file(
+                                File(image!.path),
+                                height: 80,
+                              )
+                            : Image.asset(
+                                'assets/add_image.png',
+                                height: 80,
+                                width: 80,
+                              ),
+                      ),
+                    );
                   },
-                  child: ClipRRect(
-                    child: image != null
-                        ? Image.file(
-                            File(image!.path),
-                            height: 80,
-                          )
-                        : Image.asset(
-                            'assets/add_image.png',
-                            height: 80,
-                            width: 80,
-                          ),
-                  ),
                 ),
               ),
             ),
@@ -115,7 +134,6 @@ class _AddPageState extends State<AddPage> {
                 },
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(10),
               child: TextFormField(
@@ -136,32 +154,32 @@ class _AddPageState extends State<AddPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomRadio(context: context, content: 'Romance'),  
+                CustomRadio(context: context, content: 'Romance'),
                 CustomRadio(context: context, content: 'History'),
-                 CustomRadio(context: context, content: 'Fitness'),
+                CustomRadio(context: context, content: 'Fitness'),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 CustomRadio(context: context, content: 'Horror'),
-               CustomRadio(context: context, content: 'Other'),
+                CustomRadio(context: context, content: 'Horror'),
+                CustomRadio(context: context, content: 'Other'),
                 CustomRadio(context: context, content: 'Thriller'),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 CustomRadio(context: context, content: 'Motivation'),
+                CustomRadio(context: context, content: 'Motivation'),
                 CustomRadio(context: context, content: 'Adventure'),
-                 CustomRadio(context: context, content: 'Top 10'),
+                CustomRadio(context: context, content: 'Top 10'),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomRadio(context: context, content: 'Trending now'),
-                 CustomRadio(context: context, content: 'Newly published'),
+                CustomRadio(context: context, content: 'Newly published'),
                 CustomRadio(context: context, content: 'Best seller'),
               ],
             ),
@@ -192,9 +210,9 @@ class _AddPageState extends State<AddPage> {
                     }
                   },
                   child: load
-                      ?const Row(
+                      ? const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text('Please wait'),
                             SizedBox(
                               width: 15,
@@ -247,27 +265,31 @@ class _AddPageState extends State<AddPage> {
     }
   }
 
-  Future<void> addImage() async {
+  Future<File?> addImage() async {
     var pickingimage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickingimage != null) {
-      setState(() {
-        image = File(pickingimage.path);
-        extensionImage = image!.path.split('.').last;
-      });
+      // setState(() {
+      //   image = File(pickingimage.path);
+      //   extensionImage = image!.path.split('.').last;
+      // });
+      return File(pickingimage.path);
     }
+    return null;
   }
 
   Future<void> addToDatabase() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference story = firestore.collection('story');
     final storydata = Story(
-        image: imageurl!,
-        storyname: _storyname.text,
-        authorname: _authorname.text,
-        story: fileurl!,
-        category: AddFunctions.groupValue.value,
-        firUid: 'j', isFavorite: false,);
+      image: imageurl!,
+      storyname: _storyname.text,
+      authorname: _authorname.text,
+      story: fileurl!,
+      category: AddFunctions.groupValue.value,
+      firUid: 'j',
+      isFavorite: false,
+    );
     story.add(storydata.toJson()).whenComplete(() => ScaffoldMessenger(
         child: CustomSnackBar(contentText: 'successfully added')));
   }
