@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:read_me/main.dart';
 import 'package:read_me/presentation/pages/admin/add_page.dart';
-import 'package:read_me/presentation/pages/home_section/home.dart';
 import 'package:read_me/presentation/pages/login_section/login.dart';
+import '../main_page/home.dart';
 import 'bloc/splash_bloc.dart';
 
 class SplashScreen extends StatelessWidget {

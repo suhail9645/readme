@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:read_me/main.dart';
 import '../../../domain/model_user.dart/model_user.dart';
+import '../edit_profile/edit_profile.dart';
 import '../home_section/variables.dart';
 import '../premium_section/premium.dart';
 import '../register_section/register_functions.dart';
 import '../settings/setting.dart';
-import 'edit_profile.dart';
+import 'bloc/profile_bloc.dart';
 import 'favorite_list.dart';
 import 'file_list.dart';
 
@@ -20,6 +23,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    profileBloc.add(ProfilePageInitialEvent());
+    profileBodyBloc.add(FavouriteBodyEvent());
     return Scaffold(
       body: Stack(
         children: [
@@ -63,60 +68,62 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
               ),
-              ValueListenableBuilder(
-                  valueListenable: RegisterFunction.userDetailes,
-                  builder: (context, value, child) {
-                    user = value.last;
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 20, 0, 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            radius: 50,
-                            backgroundImage: NetworkImage(user!.imageUrl ??
-                                'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user!.fullName,
-                                style: Variables.mStyle,
-                              ),
-                              Text(
-                                user!.userName,
-                                style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white),
-                              ),
-                              OutlinedButton(
-                                  style: const ButtonStyle(
-                                    side: MaterialStatePropertyAll(
-                                      BorderSide(color: Colors.white),
+              BlocBuilder<ProfileBloc, ProfileState>(
+                        builder: (context, state) {
+                          if (state is ProfilePageInitialState) {
+                            user=state.userData;
+                            return Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  radius: 50,
+                                  backgroundImage: NetworkImage(state
+                                          .userData.imageUrl ??
+                                      'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      state.userData.fullName,
+                                      style: Variables.mStyle,
                                     ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) => EditPage(
-                                        user: value.last,
-                                      ),
-                                    ));
-                                  },
-                                  child: Text(
-                                    'Edit Profile',
-                                    style: Variables.sStyle,
-                                  ))
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
+                                    Text(
+                                      state.userData.userName,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white),
+                                    ),
+                                    OutlinedButton(
+                                        style: const ButtonStyle(
+                                          side: MaterialStatePropertyAll(
+                                            BorderSide(color: Colors.white),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) => EditPage(
+                                              user:state.userData,
+                                            ),
+                                          ));
+                                        },
+                                        child: Text(
+                                          'Edit Profile',
+                                          style: Variables.sStyle,
+                                        ))
+                                  ],
+                                ),
+                              ],
+                            );
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                  
                   }),
               Padding(
                 padding: const EdgeInsets.only(left: 14, top: 9, bottom: 20),
@@ -155,119 +162,136 @@ class _ProfilePageState extends State<ProfilePage> {
                       )),
                 ),
               ),
-              Expanded(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 46, 47, 55),
-                    borderRadius: BorderRadiusDirectional.only(
-                      topStart: Radius.circular(30),
-                      topEnd: Radius.circular(30),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+              BlocBuilder<ProfileBodyBloc, ProfileBodyState>(
+                bloc: profileBodyBloc,
+                builder: (context, state) {
+                  return Expanded(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 46, 47, 55),
+                        borderRadius: BorderRadiusDirectional.only(
+                          topStart: Radius.circular(30),
+                          topEnd: Radius.circular(30),
+                        ),
+                      ),
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                shape: const MaterialStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    shape: const MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                        ),
+                                      ),
+                                    ),
+                                    elevation: state is FavouriteBody
+                                        ? const MaterialStatePropertyAll(8)
+                                        : const MaterialStatePropertyAll(0),
+                                    backgroundColor: state is FavouriteBody
+                                        ? const MaterialStatePropertyAll(
+                                            Variables.appBackground)
+                                        : const MaterialStatePropertyAll(
+                                            Color.fromARGB(255, 36, 36, 37)),
+                                  ),
+                                  onPressed: () {
+                                    profileBodyBloc.add(FavouriteBodyEvent());
+                                    // setState(() {
+                                    //   currentIndex = 0;
+                                    // });
+                                  },
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(5, 19, 0, 5),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.favorite,
+                                          color: Colors.red,
+                                        ),
+                                        SizedBox(
+                                          width: currentIndex == 0 ? 9 : 6,
+                                        ),
+                                        Text(
+                                          'Favorite',
+                                          style: Variables.mStyle,
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
-                                elevation: currentIndex == 0
-                                    ? const MaterialStatePropertyAll(8)
-                                    : const MaterialStatePropertyAll(0),
-                                backgroundColor: currentIndex == 0
-                                    ? const MaterialStatePropertyAll(
-                                        Variables.appBackground)
-                                    : const MaterialStatePropertyAll(
-                                        Color.fromARGB(255, 36, 36, 37)),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  currentIndex = 0;
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 19, 0, 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.favorite,
-                                      color: Colors.red,
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    shape: const MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(20),
+                                        ),
+                                      ),
                                     ),
-                                    SizedBox(
-                                      width: currentIndex == 0 ? 9 : 6,
-                                    ),
-                                    Text(
-                                      'Favorite',
-                                      style: Variables.mStyle,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                shape: const MaterialStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(20),
+                                    elevation: state is FileBody
+                                        ? const MaterialStatePropertyAll(8)
+                                        : const MaterialStatePropertyAll(0),
+                                    backgroundColor: state is FileBody
+                                        ? const MaterialStatePropertyAll(
+                                            Variables.appBackground)
+                                        : const MaterialStatePropertyAll(
+                                            Color.fromARGB(255, 35, 36, 42)),
+                                  ),
+                                  onPressed: () {
+                                    profileBodyBloc.add(FileBodyEvent());
+                                    // setState(() {
+                                    //   currentIndex = 1;
+                                    // });
+                                  },
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(5, 19, 0, 5),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.file_copy,
+                                          color: Colors.green,
+                                        ),
+                                        SizedBox(
+                                          width: currentIndex == 1 ? 9 : 6,
+                                        ),
+                                        Text(
+                                          'Files',
+                                          style: Variables.mStyle,
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
-                                elevation: currentIndex == 1
-                                    ? const MaterialStatePropertyAll(8)
-                                    : const MaterialStatePropertyAll(0),
-                                backgroundColor: currentIndex == 1
-                                    ? const MaterialStatePropertyAll(
-                                        Variables.appBackground)
-                                    : const MaterialStatePropertyAll(
-                                        Color.fromARGB(255, 35, 36, 42)),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  currentIndex = 1;
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 19, 0, 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.file_copy,
-                                      color: Colors.green,
-                                    ),
-                                    SizedBox(
-                                      width: currentIndex == 1 ? 9 : 6,
-                                    ),
-                                    Text(
-                                      'Files',
-                                      style: Variables.mStyle,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
+                            ],
                           ),
+                          Expanded(
+                              child: state is FavouriteBody
+                                  ? FavoriteList(
+                                      favouriteStories: state.favoriteStories,
+                                    )
+                                  : state is FileBody
+                                      ? FileList(
+                                          allFiles: state.allFiles,
+                                        )
+                                      : const SizedBox()),
                         ],
                       ),
-                      Expanded(
-                          child: currentIndex == 0
-                              ? const FavoriteList()
-                              : const FileList()),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               )
             ],
           )

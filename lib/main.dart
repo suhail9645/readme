@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:read_me/presentation/pages/edit_profile/bloc/edit_profile_bloc.dart';
 import 'package:read_me/presentation/pages/home_section/bloc/home_bloc.dart';
 import 'package:read_me/presentation/pages/login_section/bloc/login_bloc.dart';
+import 'package:read_me/presentation/pages/main_page/bloc/main_page_bloc.dart';
+import 'package:read_me/presentation/pages/profile_section/bloc/profile_bloc.dart';
 import 'package:read_me/presentation/pages/splash_section/bloc/splash_bloc.dart';
 import 'package:read_me/presentation/pages/splash_section/splash.dart';
 
@@ -34,6 +37,11 @@ void main() async {
  SplashBloc splashBloc=SplashBloc();
  LoginBloc loginBloc=LoginBloc();
  HomeBloc homeBloc=HomeBloc()..add(HomePageInitalEvent());
+ MainPageBloc mainPageBloc=MainPageBloc();
+ ProfileBloc profileBloc =ProfileBloc();
+ ProfileBodyBloc profileBodyBloc=ProfileBodyBloc();
+ EditProfileBloc editProfileBloc=EditProfileBloc();
+ EditProfileImageBloc editProfileImageBloc=EditProfileImageBloc();
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -43,7 +51,11 @@ class MyApp extends StatelessWidget {
     providers: [
       BlocProvider(create: (context) => splashBloc,),
       
-      BlocProvider(create: (context) => loginBloc,)
+      BlocProvider(create: (context) => loginBloc,),
+      BlocProvider(create: (context) => mainPageBloc,),
+      BlocProvider(create: (context) => profileBloc,),
+      BlocProvider(create: (context) => editProfileBloc,),
+      // BlocProvider(create: (context) => profileBodyBloc,)
     ],
        
       child: MaterialApp(

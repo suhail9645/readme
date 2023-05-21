@@ -86,7 +86,7 @@ class FilePage extends StatelessWidget {
                               trailing: IconButton(
                                   onPressed: () {
                                  showDialog(context: context, builder: (context) =>    CustomAlert(
-                                      content: 'Are you this file from readme',
+                                      content: 'Are you Sure',
                                       context: context,
                                       onPress: () {
                                         ClassFunctions.deleteFile(index);

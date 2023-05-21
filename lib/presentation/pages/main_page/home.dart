@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:read_me/main.dart';
 import 'package:read_me/presentation/pages/home_section/variables.dart';
+
 import '../favorite_section/favorite.dart';
 import '../file_section/file.dart';
+import '../home_section/home_page.dart';
 import '../premium_section/premium.dart';
-import 'home_two.dart';
+import 'bloc/main_page_bloc.dart';
 
 class FirstHome extends StatefulWidget {
   const FirstHome({super.key});
@@ -17,11 +21,11 @@ class FirstHome extends StatefulWidget {
 }
 
 class _FirstHomeState extends State<FirstHome> {
-  final List<Widget> pages =  [
+  final List<Widget> pages = [
     HomePageTwo(),
-   const FilePage(),
-  const  PremiumPage(),
-  const  FavoritePage()
+    const FilePage(),
+    const PremiumPage(),
+    const FavoritePage()
   ];
   late StreamSubscription subscription;
   var isDeviceConnected = false;
@@ -50,13 +54,19 @@ class _FirstHomeState extends State<FirstHome> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: Variables.bottemIndex,
-      builder: (context, value, child) => GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: pages[value]),
+    return BlocBuilder<MainPageBloc, MainPageState>(
+      bloc: mainPageBloc,
+      builder: (context, state) {
+        final successState=state as MainPageInitial;
+        return ValueListenableBuilder(
+          valueListenable: Variables.bottemIndex,
+          builder: (context, value, child) => GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: pages[successState.index]),
+        );
+      },
     );
   }
 

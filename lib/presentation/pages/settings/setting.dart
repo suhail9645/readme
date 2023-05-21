@@ -6,8 +6,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../domain/model_user.dart/model_user.dart';
+import '../edit_profile/edit_profile.dart';
 import '../home_section/variables.dart';
-import '../profile_section/edit_profile.dart';
 import '../widgets/widgets.dart';
 
 class SettingPage extends StatelessWidget {

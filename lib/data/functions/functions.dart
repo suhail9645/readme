@@ -8,7 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import '../../domain/model/model_story.dart';
 import '../../domain/model_file/model_file.dart';
 import '../../presentation/pages/admin/add_page.dart';
-import '../../presentation/pages/home_section/home.dart';
+import '../../presentation/pages/main_page/home.dart';
 import '../../presentation/pages/register_section/register_functions.dart';
 import '../../presentation/pages/welcome.dart';
 import '../../presentation/pages/widgets/widgets.dart';

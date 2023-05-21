@@ -25,5 +25,6 @@ class BackIntoHomeEvent extends HomeEvent {
 class CategoryItemClickedEvent extends HomeEvent{
   final String categoryName;
   final List<Story> allStories;
-  CategoryItemClickedEvent({required this.allStories, required this.categoryName});
+  final bool isCategoryList;
+  CategoryItemClickedEvent({required this.allStories, required this.categoryName,required this.isCategoryList});
 }

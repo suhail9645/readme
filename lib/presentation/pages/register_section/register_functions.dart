@@ -7,7 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../data/functions/functions.dart';
 import '../../../domain/model_user.dart/model_user.dart';
-import '../home_section/home.dart';
+import '../main_page/home.dart';
 import '../widgets/widgets.dart';
 
 class RegisterFunction {

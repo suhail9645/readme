@@ -9,33 +9,21 @@ import '../home_section/variables.dart';
 
 
 class FileList extends StatelessWidget {
-  const FileList({super.key});
-
+  const FileList({super.key,required this.allFiles});
+  final List<FileCollection>allFiles;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Hive.openBox<FileCollection>('files'),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          final fileDb = Hive.box<FileCollection>('files');
-
-          return ValueListenableBuilder(
-            valueListenable: fileDb.listenable(),
-            builder: (context, value, child) {
-              return value.isNotEmpty
+    
+              return allFiles.isNotEmpty
                   ? ListView.builder(
-                      itemCount: value.length,
+                      itemCount: allFiles.length,
                       itemBuilder: (context, index) {
-                        List<FileCollection> files = [];
-                        for (var element in value.values) {
-                          files.add(element);
-                        }
-
+                       
                         return ListTile(
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
-                                  FileRead(file: files[index]),
+                                  FileRead(file: allFiles[index]),
                             ));
                           },
                           visualDensity: VisualDensity.compact,
@@ -44,12 +32,12 @@ class FileList extends StatelessWidget {
                             color: Colors.green,
                           ),
                           title: Text(
-                            files[index].pdfName,
+                            allFiles[index].pdfName,
                             overflow: TextOverflow.ellipsis,
                             style: Variables.mStyle,
                           ),
                           subtitle: Text(
-                            files[index].dateTime,
+                            allFiles[index].dateTime,
                             style: const TextStyle(color: Colors.white),
                           ),
                           trailing: IconButton(
@@ -78,12 +66,6 @@ class FileList extends StatelessWidget {
                         )
                       ]),
                     );
-            },
-          );
-        } else {
-          return const CircularProgressIndicator();
-        }
-      },
-    );
+            }
+          
   }
-}

@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:read_me/data/repository/story_hive.dart';
 import 'package:read_me/domain/model/model_story.dart';
 
@@ -38,7 +37,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomePageState(
         isHome: true,
         allStories: event.allStories,
-        isCategoryList: true,
+        isCategoryList: event.isCategoryList,
         categoryName: event.categoryName));
+       
   }
 }

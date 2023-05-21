@@ -1,7 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:read_me/main.dart';
+import 'package:read_me/presentation/pages/home_section/bloc/home_bloc.dart';
+import 'package:read_me/presentation/pages/main_page/bloc/main_page_bloc.dart';
 
 import '../../../data/functions/functions.dart';
 import '../home_section/variables.dart';
@@ -38,7 +41,6 @@ class CustomSnackBar extends SnackBar {
         );
 }
 
-
 class CustomAwesome extends AwesomeDialog {
   CustomAwesome({required super.context, required content, required value})
       : super(
@@ -63,54 +65,61 @@ class CustomBottom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-        valueListenable: Variables.bottemIndex,
-        builder: (context, values, child) {
-          List<Color> bottemItemColor = const [
-            Color.fromARGB(255, 63, 143, 213),
-            Color.fromARGB(255, 8, 225, 55),
-            Color.fromARGB(255, 247, 187, 7),
-            Colors.red,
-          ];
-          return BottomNavigationBar(
-            onTap: (value) {
-              Variables.bottemIndex.value = value;
-              Variables.onTap.value = true;
-            },
-            currentIndex: values,
-            elevation: 5,
-            selectedItemColor: bottemItemColor[values],
-            unselectedItemColor: Colors.white,
-            backgroundColor: const Color.fromARGB(57, 85, 85, 87),
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                ),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.file_copy,
-                ),
-                label: 'File',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.star,
-                ),
-                label: 'Premium',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.favorite,
-                ),
-                label: 'Favorite',
-              ),
-            ],
-          );
-        });
+    return BlocBuilder<MainPageBloc, MainPageState>(
+      bloc: mainPageBloc,
+      builder: (context, state) {
+        final successState=state as MainPageInitial;
+        return ValueListenableBuilder(
+            valueListenable: Variables.bottemIndex,
+            builder: (context, values, child) {
+              // List<Color> bottemItemColor = const [
+              //   Color.fromARGB(255, 63, 143, 213),
+              //   Color.fromARGB(255, 8, 225, 55),
+              //   Color.fromARGB(255, 247, 187, 7),
+              //   Colors.red,
+              // ];
+              return BottomNavigationBar(
+                onTap: (value) {
+                  mainPageBloc.add(BottemItemClicked(index: value));
+                  // Variables.bottemIndex.value = value;
+                  // Variables.onTap.value = true;
+                },
+                currentIndex: successState.index,
+                elevation: 5,
+                selectedItemColor: const Color.fromARGB(255, 63, 143, 213),
+                unselectedItemColor: Colors.white,
+                backgroundColor: const Color.fromARGB(57, 85, 85, 87),
+                type: BottomNavigationBarType.fixed,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.home,
+                    ),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.file_copy,
+                    ),
+                    label: 'File',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.star,
+                    ),
+                    label: 'Premium',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.favorite,
+                    ),
+                    label: 'Favorite',
+                  ),
+                ],
+              );
+            });
+      },
+    );
   }
 }
 
@@ -154,4 +163,3 @@ class CustomAlert extends AlertDialog {
                   child: const Text('Yes'))
             ]);
 }
-

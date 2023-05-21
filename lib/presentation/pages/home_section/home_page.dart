@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -7,11 +8,9 @@ import 'package:read_me/presentation/pages/home_section/widget/category_model.da
 import 'package:read_me/presentation/pages/home_section/widget/category_page.dart';
 import 'package:read_me/presentation/pages/home_section/widget/search.dart';
 import 'package:read_me/presentation/pages/home_section/variables.dart';
-import '../../../data/functions/functions.dart';
 import '../../../domain/model/model_story.dart';
 import '../../../domain/repository/other.dart';
 import '../profile_section/profile.dart';
-import '../read_section/read.dart';
 import '../widgets/widgets.dart';
 import 'bloc/home_bloc.dart';
 import 'widget/half_body.dart';
@@ -131,51 +130,25 @@ class HomePageTwo extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                              children: categoryStory
-                                  .map((e) => Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            8, 0, 8, 14),
-                                        child: SizedBox(
-                                          height: height / 6.5,
-                                          width: width / 2.7,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: GestureDetector(
-                                              onTap: () async {
-                                                Navigator.of(context)
-                                                    .push(MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ReadPage(
-                                                    story: e,
-                                                  ),
-                                                ));
-                                              },
-                                              child: Image(
-                                                image: NetworkImage(e.image),
-                                                fit: BoxFit.fill,
-                                                errorBuilder: (context, error,
-                                                    stackTrace) {
-                                                  return ColoredBox(
-                                                    color: Colors.black12,
-                                                    child: Center(
-                                                      child: Text(
-                                                        e.storyname,
-                                                        style: Variables.sStyle,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ))
-                                  .toList()),
-                        ),
+                        CarouselSlider(
+                            items: categoryStory
+                                .map(
+                                  (item) => Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(item.image),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                            options: CarouselOptions(
+                                height: height / 1.6,
+                                autoPlay: true,
+                                enlargeCenterPage: true,
+                                initialPage: 1)),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(14, 0, 0, 6),
                           child: Text(
@@ -191,11 +164,10 @@ class HomePageTwo extends StatelessWidget {
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 4),
                           itemBuilder: (context, index) => CategoryModel(
-                            homePageState: state,
+                              homePageState: state,
                               image: imagesForCategory[index],
                               name: categoryNames[index]),
                         ),
-                       
                         !state.isCategoryList
                             ? HalfBody(
                                 storyValues: state.allStories,

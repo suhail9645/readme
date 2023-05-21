@@ -16,7 +16,7 @@ class CategoryModel extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            homeBloc.add(CategoryItemClickedEvent(allStories:homePageState.allStories , categoryName: name,));
+            homeBloc.add(CategoryItemClickedEvent(allStories:homePageState.allStories , categoryName: name,isCategoryList: !homePageState.isCategoryList));
           
           },
           child: CircleAvatar(
